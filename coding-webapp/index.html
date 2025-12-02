@@ -17,20 +17,23 @@
         <nav class="course-nav">
           <button id="prev-lesson" class="nav-btn">← Previous</button>
           <span id="lesson-title">Getting Started</span>
+          <span id="lesson-counter" style="margin: 0 1rem; color: #666"
+            >(1/4)</span
+          >
           <button id="next-lesson" class="nav-btn">Next →</button>
         </nav>
       </header>
 
       <main class="main-content">
         <div class="lesson-content" id="lesson-content">
-          <!-- Lesson content will be loaded here -->
+          <div class="loading">Loading lesson content...</div>
         </div>
 
-        <div class="exercise-panel" id="exercise-panel">
+        <div class="exercise-panel" id="exercise-panel" style="display: none">
           <div class="exercise-header">
-            <h3 id="exercise-title"></h3>
-            <button id="run-code" class="run-btn">Run Code</button>
-            <button id="check-exercise" class="check-btn">
+            <h3 id="exercise-title">Select an exercise to begin</h3>
+            <button id="run-code" class="run-btn" disabled>Run Code</button>
+            <button id="check-exercise" class="check-btn" disabled>
               Check Solution
             </button>
           </div>
@@ -42,9 +45,13 @@
             </div>
             <div class="output-container">
               <h4>Output:</h4>
-              <div id="exercise-output" class="output-box"></div>
+              <div id="exercise-output" class="output-box">
+                Select an exercise and write some code to see the output here.
+              </div>
               <h4>Expected Output:</h4>
-              <div id="expected-output" class="expected-output-box"></div>
+              <div id="expected-output" class="expected-output-box">
+                No expected output specified.
+              </div>
             </div>
           </div>
         </div>

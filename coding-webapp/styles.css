@@ -321,6 +321,18 @@ body {
   color: #666;
 }
 
+#code-editor .loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  color: #6c757d;
+  font-style: italic;
+}
+
 .success {
   color: #28a745;
   font-weight: bold;

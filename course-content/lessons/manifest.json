@@ -1,0 +1,9 @@
+{
+  "lessons": [
+    "1-getting-started.md",
+    "2-information-from-the-user.md",
+    "3-more-about-variables.md",
+    "4-arithmetic-operations.md",
+    "5-conditional-statements.md"
+  ]
+}

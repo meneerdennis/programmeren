@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monaco Editor Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .status {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        font-weight: bold;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .loading {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+      }
+      #editor {
+        height: 400px;
+        border: 1px solid #ccc;
+        margin: 20px 0;
+      }
+    </style>
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Monaco Editor Loading Test</h1>
+
+      <div id="status" class="status loading">Loading Monaco Editor...</div>
+
+      <div id="editor"></div>
+
+      <div id="controls" style="display: none">
+        <h3>Test Controls</h3>
+        <button onclick="testLanguage('python')">Python</button>
+        <button onclick="testLanguage('javascript')">JavaScript</button>
+        <button onclick="testLanguage('html')">HTML</button>
+        <button onclick="testLanguage('css')">CSS</button>
+        <p id="current-language"></p>
+      </div>
+    </div>
+
+    <script>
+      let editor = null;
+      const statusEl = document.getElementById("status");
+      const controlsEl = document.getElementById("controls");
+      const langEl = document.getElementById("current-language");
+
+      function setStatus(message, type) {
+        statusEl.textContent = message;
+        statusEl.className = `status ${type}`;
+      }
+
+      function testLanguage(language) {
+        if (editor) {
+          const model = editor.getModel();
+          monaco.editor.setModelLanguage(model, language);
+          langEl.textContent = `Current language: ${language}`;
+        }
+      }
+
+      // Test Monaco Editor loading
+      require.config({
+        paths: {
+          vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs",
+        },
+      });
+
+      require(["vs/editor/editor.main"], () => {
+        try {
+          setStatus("Monaco Editor loaded successfully!", "success");
+
+          editor = monaco.editor.create(document.getElementById("editor"), {
+            value: `// Monaco Editor Test
+console.log("Hello from Monaco Editor!");
+
+function greet(name) {
+    return \`Hello, \${name}!\`;
+}
+
+console.log(greet("World"));`,
+            language: "javascript",
+            theme: "vs-light",
+            fontSize: 14,
+            minimap: { enabled: false },
+          });
+
+          // Show controls after successful initialization
+          controlsEl.style.display = "block";
+          testLanguage("javascript");
+
+          console.log("Monaco Editor initialized successfully");
+        } catch (error) {
+          setStatus(
+            `Monaco Editor failed to initialize: ${error.message}`,
+            "error"
+          );
+          console.error("Monaco Editor initialization failed:", error);
+
+          // Fallback to simple textarea
+          document.getElementById("editor").innerHTML = `
+                    <textarea style="width: 100%; height: 400px; font-family: monospace; padding: 10px; border: 1px solid #ccc;">
+// Monaco Editor failed to load
+// Fallback to simple textarea
+console.log("Hello from fallback editor!");
+                    </textarea>
+                `;
+          setStatus("Using fallback editor (textarea)", "loading");
+        }
+      }, (error) => {
+        setStatus(`Failed to load Monaco Editor modules: ${error}`, "error");
+        console.error("Failed to load Monaco Editor:", error);
+      });
+
+      // Test Pyodide loading
+      setTimeout(() => {
+        setStatus("Testing Pyodide...", "loading");
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js";
+        script.onload = () => {
+          setStatus(
+            "Pyodide script loaded. Editor ready for Python!",
+            "success"
+          );
+          console.log("Pyodide loaded successfully");
+        };
+        script.onerror = () => {
+          setStatus(
+            "Pyodide failed to load. Python features will be limited.",
+            "error"
+          );
+          console.error("Pyodide failed to load");
+        };
+        document.head.appendChild(script);
+      }, 1000);
+    </script>
+  </body>
+</html>

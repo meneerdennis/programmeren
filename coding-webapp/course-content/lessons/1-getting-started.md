@@ -55,18 +55,49 @@ Samenvattend, als je tekst wilt afdrukken, moet de tekst volledig tussen aanhali
 
 Schrijf een programma dat een emoticon afdrukt: :-)
 
-<in-browser-programming-exercise name="Print Hello World" tmcname="part01-01_hello_world">
+<in-browser-programming-exercise name="smiley" tmcname="smiley">
 
-Schrijf een programma dat "Hello, World!" afdrukt.
+<sample-output>
+
+</sample-output>
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Print Your Name" tmcname="part01-02_print_name">
+## Een programma met meerdere commando's
 
-Schrijf een programma dat je naam afdrukt. Vervang "Your Name" door je echte naam.
+Meerdere commando's die achter elkaar geschreven worden zullen in volgorde van eerste tot laatste worden uitgevoerd.
+Bijvoorbeeld dit programma
 
 ```python
-print("Your Name")
+print("Welcome to Introduction to Programming!")
+print("First we will practice using the print command.")
+print("This program prints three lines of text on the screen.")
+```
+
+drukt de volgende regels af op het scherm:
+
+<sample-output>
+
+Welcome to Introduction to Programming!
+First we will practice using the print command.
+This program prints three lines of text on the screen.
+
+</sample-output>
+
+<in-browser-programming-exercise name="Fix the code: Seven Brothers" tmcname="part01-02_seven_brothers">
+
+"Seitsemän veljestä" is een van de eerste romans die ooit in het Fins geschreven werd. Het verhaal gaat over zeven weesbroers die leren hun weg te vinden in de wereld ([lees meer op Wikipedia](https://en.wikipedia.org/wiki/Seitsem%C3%A4n_veljest%C3%A4)).
+
+Dit programma zou de namen van de broers in alfabetische volgorde moeten afdrukken, maar het werkt nog niet helemaal goed. Repareer het programma zodat de namen in de juiste volgorde worden afgedrukt.
+
+```python
+print("Simeoni")
+print("Juhani")
+print("Eero")
+print("Lauri")
+print("Aapo")
+print("Tuomas")
+print("Timo")
 ```
 
 </in-browser-programming-exercise>
@@ -83,12 +114,6 @@ Merrily, merrily, merrily, merrily,
 Life is but a dream.
 
 </sample-output>
-
-</in-browser-programming-exercise>
-
-<in-browser-programming-exercise name="Simple Calculation" tmcname="part01-03_calculation">
-
-Schrijf een programma dat de som van 15 en 27 afdrukt.
 
 </in-browser-programming-exercise>
 
@@ -132,6 +157,34 @@ Dit programma drukt af:
 Met de tweede regel code berekent Python niet het resultaat van de bewerking, maar drukt in plaats daarvan de bewerking zelf af, als een string.
 Dus, strings worden afgedrukt precies zoals ze geschreven zijn, zonder enige verwijzing naar hun inhoud.
 
+## Commentaren
+
+Elke regel die begint met het pond-teken `#`, ook bekend als een hash of een nummerteken, is een commentaar. Dit betekent dat alle tekst op die regel na het `#` symbool op geen enkele manier van invloed is op hoe het programma functioneert. Python zal het gewoon negeren.
+
+Commentaren worden gebruikt om uit te leggen hoe een programma werkt, zowel voor de programmeur zelf als voor anderen die de programmacode lezen. In dit programma legt een commentaar de berekening uit die in de code wordt uitgevoerd:
+
+```python
+print("Hours in a year:")
+# er zijn 365 dagen in een jaar en 24 uur per dag
+print(365*24)
+```
+
+Wanneer het programma wordt uitgevoerd, zal het commentaar niet zichtbaar zijn voor de gebruiker:
+
+<sample-output>
+
+Hours in a year:
+8760
+
+</sample-output>
+
+Korte commentaren kunnen ook toegevoegd worden aan het einde van een regel:
+
+```python
+print("Hours in a year:")
+print(365*24) # 365 dagen, 24 uur per dag
+```
+
 <in-browser-programming-exercise name="Minutes in a year" tmcname="part01-04_minutes_in_a_year">
 
 Schrijf een programma dat het aantal minuten in een jaar afdrukt. Gebruik Python code om de berekening uit te voeren, zoals in het vorige codevoorbeeld.
@@ -165,3 +218,15 @@ print("Hello there!")
 </sample-output>
 
 </in-browser-programming-exercise>
+
+<!--
+
+Een quiz om de inhoud van deze sectie te herzien:
+
+<quiz id="f1d6d205-dfd6-5c6f-b148-b332dfd64289"></quiz>
+
+-->
+
+```
+
+```

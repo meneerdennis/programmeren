@@ -6,25 +6,91 @@ class CourseManager {
     this.progress = this.loadProgress();
   }
 
-  // Load course content (this would typically fetch from a server)
+  // Load course content from organized directory structure
   async loadCourse() {
-    // For demo purposes, we'll include the example lesson
-    // In a real app, this would load from files or API
     try {
-      const response = await fetch("1-getting-started.md");
-      if (!response.ok) {
-        throw new Error("Failed to load lesson");
+      // Load lesson list from manifest file
+      let lessonFiles = [];
+      try {
+        const manifestResponse = await fetch(
+          "course-content/lessons/manifest.json"
+        );
+        if (manifestResponse.ok) {
+          const manifest = await manifestResponse.json();
+          lessonFiles = manifest.lessons.map(
+            (file) => `course-content/lessons/${file}`
+          );
+          console.log("Loaded lessons from manifest:", lessonFiles);
+        }
+      } catch (manifestError) {
+        console.warn(
+          "Could not load manifest, using fallback list:",
+          manifestError
+        );
       }
-      const content = await response.text();
 
-      this.lessons = [
-        {
-          id: "getting-started",
-          title: "Getting Started",
-          content: content,
-          path: "/part-1/1-getting-started",
-        },
-      ];
+      // Fallback to hardcoded list if manifest fails
+      if (lessonFiles.length === 0) {
+        lessonFiles = [
+          "course-content/lessons/1-getting-started.md",
+          "course-content/lessons/2-information-from-the-user.md",
+          "course-content/lessons/3-more-about-variables.md",
+          "course-content/lessons/4-arithmetic-operations.md",
+          "course-content/lessons/5-conditional-statements.md",
+        ];
+      }
+
+      this.lessons = [];
+
+      for (const filePath of lessonFiles) {
+        try {
+          console.log(`Attempting to load: ${filePath}`);
+          const response = await fetch(filePath);
+          console.log(
+            `Response for ${filePath}: ${response.status} ${response.statusText}`
+          );
+
+          if (response.ok) {
+            const content = await response.text();
+            console.log(
+              `Content length for ${filePath}: ${content.length} characters`
+            );
+            const lesson = this.parseLessonFromContent(content, filePath);
+            console.log(
+              `Parsed lesson for ${filePath}:`,
+              lesson ? "Success" : "Failed"
+            );
+
+            if (lesson) {
+              console.log(
+                `Adding lesson: ${lesson.title} (ID: ${lesson.id}, Hidden: ${lesson.hidden})`
+              );
+              this.lessons.push(lesson);
+            }
+          } else {
+            console.warn(
+              `Failed to fetch ${filePath}: ${response.status} ${response.statusText}`
+            );
+          }
+        } catch (fileError) {
+          console.error(`Error loading ${filePath}:`, fileError);
+        }
+      }
+
+      console.log(`Total lessons loaded: ${this.lessons.length}`);
+      console.log(
+        "Loaded lessons:",
+        this.lessons.map((l) => ({
+          title: l.title,
+          id: l.id,
+          hidden: l.hidden,
+        }))
+      );
+
+      // If no lessons loaded, use fallback
+      if (this.lessons.length === 0) {
+        this.lessons = [this.getDefaultLesson()];
+      }
 
       return true;
     } catch (error) {
@@ -33,6 +99,52 @@ class CourseManager {
       this.lessons = [this.getDefaultLesson()];
       return true;
     }
+  }
+
+  // Parse lesson content and extract metadata
+  parseLessonFromContent(content, filePath) {
+    try {
+      // Extract metadata from frontmatter (lines between ---)
+      const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+      let metadata = {};
+
+      if (frontmatterMatch) {
+        const frontmatter = frontmatterMatch[1];
+        const lines = frontmatter.split("\n");
+        lines.forEach((line) => {
+          const [key, value] = line.split(":").map((s) => s.trim());
+          if (key && value) {
+            // Remove quotes from value if present
+            metadata[key] = value.replace(/^["']|["']$/g, "");
+          }
+        });
+      }
+
+      // Extract title from metadata or filename
+      const filename = filePath.split("/").pop().replace(".md", "");
+      const title = metadata.title || this.formatTitleFromFilename(filename);
+
+      return {
+        id: filename,
+        title: title,
+        content: content,
+        path: metadata.path || `/course/${filename}`,
+        hidden: metadata.hidden === "true",
+      };
+    } catch (error) {
+      console.error("Error parsing lesson:", error);
+      return null;
+    }
+  }
+
+  // Format filename to readable title
+  formatTitleFromFilename(filename) {
+    // Remove number prefix and format title
+    const cleaned = filename.replace(/^\d+-/, "");
+    return cleaned
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   // Default lesson content for demo
