@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Exercises Webapp</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <!-- Pyodide for Python execution -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="app-header">
+        <h1>Coding Exercises</h1>
+        <nav class="course-nav">
+          <button id="prev-lesson" class="nav-btn">← Previous</button>
+          <span id="lesson-title">Getting Started</span>
+          <button id="next-lesson" class="nav-btn">Next →</button>
+        </nav>
+      </header>
+
+      <main class="main-content">
+        <div class="lesson-content" id="lesson-content">
+          <!-- Lesson content will be loaded here -->
+        </div>
+
+        <div class="exercise-panel" id="exercise-panel">
+          <div class="exercise-header">
+            <h3 id="exercise-title"></h3>
+            <button id="run-code" class="run-btn">Run Code</button>
+            <button id="check-exercise" class="check-btn">
+              Check Solution
+            </button>
+          </div>
+          <div class="exercise-content">
+            <div class="editor-container">
+              <div id="code-editor">
+                <div class="loading">Loading editor...</div>
+              </div>
+            </div>
+            <div class="output-container">
+              <h4>Output:</h4>
+              <div id="exercise-output" class="output-box"></div>
+              <h4>Expected Output:</h4>
+              <div id="expected-output" class="expected-output-box"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="markdown-parser.js"></script>
+    <script src="code-executor.js"></script>
+    <script src="course-manager.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

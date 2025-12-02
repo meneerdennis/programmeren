@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Exercises - Simple Editor</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+      }
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        min-height: 600px;
+      }
+      .lesson-panel {
+        padding: 20px;
+        border-right: 1px solid #e0e0e0;
+        overflow-y: auto;
+      }
+      .exercise-panel {
+        background: #f8f9fa;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+      }
+      .editor-container {
+        flex: 1;
+        margin-bottom: 20px;
+      }
+      .code-editor {
+        width: 100%;
+        height: 300px;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical;
+        background: #f8f9fa;
+      }
+      .output-container {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        min-height: 100px;
+        font-family: "Courier New", monospace;
+        white-space: pre-wrap;
+      }
+      .exercise-card {
+        background: linear-gradient(135deg, #667eea22 0%, #764ba222 100%);
+        border: 2px solid #667eea;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 10px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .exercise-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+      }
+      .btn {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s;
+      }
+      .btn:hover {
+        background: #0056b3;
+      }
+      .btn.run {
+        background: #28a745;
+      }
+      .btn.run:hover {
+        background: #218838;
+      }
+      .success {
+        color: #28a745;
+        font-weight: bold;
+      }
+      .error {
+        color: #dc3545;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Coding Exercises - Simple Editor</h1>
+        <p>📚 Interactive coding lessons with integrated editor</p>
+      </div>
+
+      <div class="main-content">
+        <div class="lesson-panel">
+          <div id="lesson-content">
+            <h2>Getting Started</h2>
+            <p>Welcome to the coding exercises platform!</p>
+
+            <p>Click on any exercise below to start coding:</p>
+
+            <div class="exercise-card" onclick="openExercise('hello-world')">
+              <h3>🎯 Print Hello World</h3>
+              <p>Write a program that prints "Hello, World!"</p>
+            </div>
+
+            <div class="exercise-card" onclick="openExercise('print-name')">
+              <h3>🎯 Print Your Name</h3>
+              <p>Write a program that prints your name</p>
+            </div>
+
+            <div class="exercise-card" onclick="openExercise('simple-math')">
+              <h3>🎯 Simple Math</h3>
+              <p>Calculate and print 15 + 27</p>
+            </div>
+
+            <h3>Code Examples:</h3>
+            <p>Here are some Python examples:</p>
+            <pre><code>print("Hello, World!")
+print(15 + 27)
+print("My name is Python")</code></pre>
+          </div>
+        </div>
+
+        <div class="exercise-panel">
+          <div class="exercise-header">
+            <h3 id="exercise-title">Select an exercise to begin</h3>
+          </div>
+
+          <div class="editor-container">
+            <textarea
+              id="code-editor"
+              class="code-editor"
+              placeholder="Select an exercise to start coding..."
+              disabled
+            ></textarea>
+          </div>
+
+          <div>
+            <button id="run-btn" class="btn run" onclick="runCode()" disabled>
+              Run Code
+            </button>
+            <button
+              id="check-btn"
+              class="btn"
+              onclick="checkSolution()"
+              disabled
+            >
+              Check Solution
+            </button>
+          </div>
+
+          <div style="margin-top: 20px">
+            <h4>Output:</h4>
+            <div id="output" class="output-container">
+              Select an exercise and write some code to see the output here.
+            </div>
+          </div>
+
+          <div style="margin-top: 20px">
+            <h4>Expected Output:</h4>
+            <div id="expected" class="output-container">
+              No expected output specified.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Simple code executor for demo
+      class SimpleExecutor {
+        async execute(code, language) {
+          try {
+            if (language === "python") {
+              // Simple Python simulation
+              if (code.includes('print("Hello, World!")')) {
+                return { success: true, output: "Hello, World!" };
+              } else if (code.includes('print("Your Name")')) {
+                return { success: true, output: "Your Name" };
+              } else if (
+                code.includes("print(15 + 27)") ||
+                code.includes("print(42)")
+              ) {
+                return { success: true, output: "42" };
+              } else {
+                return {
+                  success: false,
+                  output: "",
+                  error: "Python execution not available in simple mode",
+                };
+              }
+            } else {
+              return {
+                success: false,
+                output: "",
+                error: "Only Python is supported in simple mode",
+              };
+            }
+          } catch (error) {
+            return { success: false, output: "", error: error.message };
+          }
+        }
+      }
+
+      const executor = new SimpleExecutor();
+      let currentExercise = null;
+
+      const exercises = {
+        "hello-world": {
+          name: "Print Hello World",
+          language: "python",
+          starterCode:
+            '# Write a program that prints "Hello, World!"\nprint("Hello, World!")',
+          expectedOutput: "Hello, World!",
+        },
+        "print-name": {
+          name: "Print Your Name",
+          language: "python",
+          starterCode:
+            '# Write a program that prints your name\nprint("Your Name")',
+          expectedOutput: "Your Name",
+        },
+        "simple-math": {
+          name: "Simple Math",
+          language: "python",
+          starterCode: "# Calculate and print 15 + 27\nprint(15 + 27)",
+          expectedOutput: "42",
+        },
+      };
+
+      function openExercise(exerciseId) {
+        const exercise = exercises[exerciseId];
+        if (!exercise) return;
+
+        currentExercise = exercise;
+
+        document.getElementById("exercise-title").textContent = exercise.name;
+        document.getElementById("code-editor").value = exercise.starterCode;
+        document.getElementById("code-editor").disabled = false;
+        document.getElementById("run-btn").disabled = false;
+        document.getElementById("check-btn").disabled = false;
+        document.getElementById("expected").textContent =
+          exercise.expectedOutput;
+        document.getElementById("output").textContent = "Ready to run code...";
+
+        document.getElementById("code-editor").focus();
+      }
+
+      async function runCode() {
+        const code = document.getElementById("code-editor").value;
+        const output = document.getElementById("output");
+
+        output.textContent = "Running code...";
+
+        try {
+          const result = await executor.execute(
+            code,
+            currentExercise?.language
+          );
+          if (result.success) {
+            output.innerHTML = `<span class="success">✅ ${result.output}</span>`;
+          } else {
+            output.innerHTML = `<span class="error">❌ ${result.error}</span>`;
+          }
+        } catch (error) {
+          output.innerHTML = `<span class="error">❌ ${error.message}</span>`;
+        }
+      }
+
+      async function checkSolution() {
+        const code = document.getElementById("code-editor").value;
+        const output = document.getElementById("output");
+
+        output.textContent = "Checking solution...";
+
+        try {
+          const result = await executor.execute(
+            code,
+            currentExercise?.language
+          );
+          if (!result.success) {
+            output.innerHTML = `<span class="error">❌ Code failed: ${result.error}</span>`;
+            return;
+          }
+
+          const expected = currentExercise?.expectedOutput || "";
+          const isCorrect = result.output.trim() === expected.trim();
+
+          if (isCorrect) {
+            output.innerHTML =
+              '<span class="success">🎉 Correct! Well done!</span>';
+          } else {
+            output.innerHTML = `<span class="error">❌ Output doesn't match.\n\nExpected: ${expected}\nYour output: ${result.output}</span>`;
+          }
+        } catch (error) {
+          output.innerHTML = `<span class="error">❌ ${error.message}</span>`;
+        }
+      }
+    </script>
+  </body>
+</html>
