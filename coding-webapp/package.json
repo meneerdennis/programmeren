@@ -1,0 +1,16 @@
+{
+  "name": "coding-webapp",
+  "version": "1.0.0",
+  "description": "Interactive coding exercises platform",
+  "scripts": {
+    "start": "npx serve .",
+    "build": "node build-manifest.js",
+    "dev": "node build-manifest.js && npx serve ."
+  },
+  "keywords": [
+    "coding",
+    "education",
+    "python"
+  ],
+  "license": "MIT"
+}

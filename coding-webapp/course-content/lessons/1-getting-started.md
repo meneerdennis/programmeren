@@ -57,8 +57,10 @@ Schrijf een programma dat een emoticon afdrukt: :-)
 
 <in-browser-programming-exercise name="smiley" tmcname="smiley">
 
-<sample-output>
+Write a program that prints an emoticon: :-)
 
+<sample-output>
+:-)
 </sample-output>
 
 </in-browser-programming-exercise>
@@ -99,6 +101,16 @@ print("Aapo")
 print("Tuomas")
 print("Timo")
 ```
+
+<sample-output>
+Aapo
+Eero
+Juhani
+Lauri
+Simeoni
+Timo
+Tuomas
+</sample-output>
 
 </in-browser-programming-exercise>
 

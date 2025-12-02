@@ -265,6 +265,9 @@ class CodingExercisesApp {
     }
 
     console.log("Exercise found:", exercise.name);
+    console.log("Exercise language:", exercise.language);
+    console.log("Exercise content:", exercise.content);
+    console.log("Exercise expectedOutput:", exercise.expectedOutput);
     this.currentExercise = exercise;
 
     // Update exercise panel
@@ -285,18 +288,34 @@ class CodingExercisesApp {
 
     // Extract starter code from exercise content
     const starterCode = this.extractStarterCode(exercise.content);
-    console.log("Starter code:", starterCode);
-    this.editor.setValue(starterCode);
+    console.log("Starter code extracted:", starterCode);
+
+    // Use exercise content as a helpful hint, or starter code if available
+    let editorContent = "";
+    if (starterCode) {
+      editorContent = starterCode;
+      console.log("Using starter code:", starterCode);
+    } else if (exercise.content && exercise.content.trim()) {
+      // Use clean content as a comment/instruction
+      const hintText = exercise.content.replace(/\n/g, " ").substring(0, 100);
+      editorContent = `# ${hintText}\n# Write your code below:\n`;
+      console.log("Using content as hint:", editorContent);
+    } else {
+      editorContent = "";
+      console.log("Empty editor content");
+    }
+
+    this.editor.setValue(editorContent);
 
     // Enable editor and buttons
     this.enableEditor();
 
     // Show expected output if available
-    const expectedOutput = this.extractExpectedOutput(exercise.content);
     const expectedOutputEl = document.getElementById("expected-output");
     if (expectedOutputEl) {
+      console.log("Displaying expected output:", exercise.expectedOutput);
       expectedOutputEl.textContent =
-        expectedOutput || "No expected output specified";
+        exercise.expectedOutput || "No expected output specified";
     }
 
     // Focus editor
@@ -356,8 +375,9 @@ class CodingExercisesApp {
       this.setEditorLanguage(exercise.language);
     }
 
-    // Set starter code
-    this.editor.setValue(exercise.starterCode);
+    // Set editor content (same logic as regular exercises)
+    let editorContent = exercise.starterCode || "";
+    this.editor.setValue(editorContent);
 
     // Enable editor and buttons
     this.enableEditor();
@@ -384,9 +404,6 @@ class CodingExercisesApp {
 
     if (editorElement) {
       editorElement.disabled = false;
-      if (editorElement.tagName === "TEXTAREA") {
-        editorElement.placeholder = "Write your code here...";
-      }
     }
 
     if (runBtn) runBtn.disabled = false;
@@ -479,6 +496,9 @@ class CodingExercisesApp {
       this.checkExercise();
     });
 
+    // Setup resize functionality
+    this.setupResizeHandle();
+
     // Keyboard shortcuts
     document.addEventListener("keydown", (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -493,6 +513,78 @@ class CodingExercisesApp {
     });
   }
 
+  // Setup resize handle functionality
+  setupResizeHandle() {
+    const resizeHandle = document.getElementById("resize-handle");
+    const contentArea = document.querySelector(".content-area");
+    const exercisePanel = document.querySelector(".exercise-panel");
+
+    if (!resizeHandle || !contentArea || !exercisePanel) return;
+
+    let isResizing = false;
+    let startX = 0;
+    let startContentWidth = 0;
+    let startPanelWidth = 0;
+
+    const minContentWidth = 200;
+    const minPanelWidth = 300;
+    const maxPanelWidth = 800;
+
+    const onMouseDown = (e) => {
+      isResizing = true;
+      startX = e.clientX;
+      startContentWidth = contentArea.getBoundingClientRect().width;
+      startPanelWidth = exercisePanel.getBoundingClientRect().width;
+
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseup", onMouseUp);
+
+      resizeHandle.style.background = "#a0a0a0";
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+    };
+
+    const onMouseMove = (e) => {
+      if (!isResizing) return;
+
+      const deltaX = e.clientX - startX;
+      const newContentWidth = startContentWidth + deltaX;
+      const newPanelWidth = startPanelWidth - deltaX;
+
+      // Apply constraints
+      if (
+        newContentWidth >= minContentWidth &&
+        newPanelWidth >= minPanelWidth &&
+        newPanelWidth <= maxPanelWidth
+      ) {
+        contentArea.style.flexBasis = `${newContentWidth}px`;
+        exercisePanel.style.width = `${newPanelWidth}px`;
+
+        // Trigger resize for Monaco editor if it exists
+        if (this.editor && typeof this.editor.layout === "function") {
+          setTimeout(() => this.editor.layout(), 0);
+        }
+      }
+    };
+
+    const onMouseUp = () => {
+      isResizing = false;
+
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+
+      resizeHandle.style.background = "";
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+
+    // Set initial widths
+    exercisePanel.style.width = "400px";
+
+    // Add event listeners
+    resizeHandle.addEventListener("mousedown", onMouseDown);
+  }
+
   // Run code
   async runCode() {
     if (!this.currentExercise) {
@@ -503,12 +595,28 @@ class CodingExercisesApp {
     const code = this.editor.getValue();
     const language = this.currentExercise.language;
 
+    console.log("Running code:", { code, language });
+
     this.showOutput("loading", "Running code...");
 
     try {
       const result = await this.executor.execute(code, language);
       const formatted = this.executor.formatOutput(result);
-      this.showOutput(formatted.className, formatted.text);
+      console.log("Execution result:", result);
+
+      // If code executed successfully but produced no output, give helpful feedback
+      if (result.success && !result.output.trim()) {
+        if (language === "python") {
+          this.showOutput(
+            "error",
+            "Your code ran successfully but produced no output. Make sure you're using print() statements."
+          );
+        } else {
+          this.showOutput("success", "Code executed successfully (no output)");
+        }
+      } else {
+        this.showOutput(formatted.className, formatted.text);
+      }
     } catch (error) {
       this.showOutput("error", `Execution failed: ${error.message}`);
     }
@@ -523,9 +631,7 @@ class CodingExercisesApp {
 
     const code = this.editor.getValue();
     const language = this.currentExercise.language;
-    const expectedOutput = this.extractExpectedOutput(
-      this.currentExercise.content
-    );
+    const expectedOutput = this.currentExercise.expectedOutput || "";
 
     this.showOutput("loading", "Checking solution...");
 

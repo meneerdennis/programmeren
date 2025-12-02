@@ -74,15 +74,15 @@ class MarkdownParser {
     });
     content = content.replace(/<\/text-box>/g, "</div>");
 
-    // Parse sample-output tags
+    // Parse in-browser-programming-exercise tags FIRST (they may contain sample-output)
+    content = this.parseExerciseTags(content);
+
+    // Parse remaining sample-output tags (those not inside exercises)
     content = content.replace(
       /<sample-output>/g,
       '<div class="sample-output">'
     );
     content = content.replace(/<\/sample-output>/g, "</div>");
-
-    // Parse in-browser-programming-exercise tags
-    content = this.parseExerciseTags(content);
 
     return content;
   }
@@ -95,16 +95,47 @@ class MarkdownParser {
 
     while ((match = exerciseRegex.exec(content)) !== null) {
       const attributes = this.parseAttributes(match[1]);
-      const exerciseContent = match[2].trim();
+      let exerciseContent = match[2].trim();
       const exerciseId = `exercise-${this.exercises.length}`;
+
+      // Check if content contains sample-output and extract expected output
+      const sampleOutputRegex = /<sample-output>([\s\S]*?)<\/sample-output>/;
+      const sampleOutputMatch = exerciseContent.match(sampleOutputRegex);
+      let expectedOutput = "";
+      let cleanContent = exerciseContent; // Content for display
+
+      console.log(`Processing exercise "${attributes.name}":`);
+      console.log("Original exercise content:", exerciseContent);
+      console.log("Sample output match:", sampleOutputMatch);
+
+      if (sampleOutputMatch) {
+        expectedOutput = sampleOutputMatch[1].trim();
+        console.log("Extracted expected output:", expectedOutput);
+        // Remove sample-output from exercise content for display
+        cleanContent = exerciseContent.replace(sampleOutputRegex, "").trim();
+        console.log(
+          "Clean content after removing sample-output:",
+          cleanContent
+        );
+      }
+
+      // Detect language
+      const detectedLanguage = this.detectLanguage(exerciseContent);
+      console.log(`Language detection for exercise "${attributes.name}":`, {
+        rawContent: exerciseContent,
+        cleanContent: cleanContent,
+        detectedLanguage: detectedLanguage,
+      });
 
       // Store exercise data
       this.exercises.push({
         id: exerciseId,
         name: attributes.name || "Untitled Exercise",
         tmcname: attributes.tmcname || "",
-        content: exerciseContent,
-        language: this.detectLanguage(exerciseContent),
+        content: cleanContent,
+        rawContent: exerciseContent, // Keep original for language detection
+        expectedOutput: expectedOutput,
+        language: detectedLanguage,
       });
 
       // Replace with clickable exercise card
@@ -136,30 +167,68 @@ class MarkdownParser {
 
   // Detect programming language from content
   detectLanguage(content) {
-    // Simple language detection based on code patterns
+    // If no clear pattern, try to detect from code blocks first
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    let match;
+
+    while ((match = codeBlockRegex.exec(content)) !== null) {
+      const language = match[1];
+      const code = match[2];
+
+      if (language === "python" || code.includes("print(")) {
+        return "python";
+      } else if (language === "javascript") {
+        return "javascript";
+      } else if (language === "html") {
+        return "html";
+      } else if (language === "css") {
+        return "css";
+      }
+    }
+
+    // Check for print statements (Python indicator) - check more broadly
+    const lowerContent = content.toLowerCase();
     if (
-      content.includes("print(") ||
-      content.includes("def ") ||
-      content.includes("import ")
+      lowerContent.includes("print(") ||
+      lowerContent.includes("def ") ||
+      lowerContent.includes("import ") ||
+      lowerContent.includes("print ") ||
+      /print\s*\(/.test(content) || // More flexible pattern for print statements
+      lowerContent.includes("schrijf een programma") || // Dutch for "write a program"
+      lowerContent.includes("emoticon") || // Common word in early programming exercises
+      lowerContent.includes("programma") // Dutch for "program"
     ) {
       return "python";
-    } else if (content.includes("<") && content.includes(">")) {
-      return "html";
-    } else if (
+    }
+
+    // Check for JavaScript patterns
+    if (
       content.includes("{") &&
       content.includes("}") &&
       content.includes(";")
     ) {
       return "javascript";
-    } else if (
+    }
+
+    // Check for CSS patterns
+    if (
       content.includes("margin") ||
       content.includes("padding") ||
-      content.includes("color")
+      content.includes("color") ||
+      /\{[^}]*\}/.test(content) // CSS rule pattern
     ) {
       return "css";
     }
 
-    return "javascript"; // default
+    // Check for HTML patterns (only if we have actual HTML tags, not markdown)
+    // Look for HTML tags like <tag> or </tag>
+    const htmlTagRegex = /<\/?[a-zA-Z][^>]*>/;
+    if (htmlTagRegex.test(content) && !content.includes("```")) {
+      return "html";
+    }
+
+    // For coding exercises in this course, default to Python
+    return "python";
   }
 
   // Basic markdown parsing

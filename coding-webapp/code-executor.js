@@ -51,6 +51,18 @@ class CodeExecutor {
     }
 
     try {
+      // Clean the code by removing pure comment lines and extra whitespace
+      const cleanedCode = this.cleanPythonCode(code);
+
+      // If no executable code remains, return success with no output
+      if (!cleanedCode.trim()) {
+        return {
+          success: true,
+          output: "",
+          error: "",
+        };
+      }
+
       // Capture print output
       const wrappedCode = `
 import sys
@@ -61,7 +73,10 @@ old_stdout = sys.stdout
 sys.stdout = captured_output = StringIO()
 
 try:
-    ${code}
+${cleanedCode
+  .split("\n")
+  .map((line) => "    " + line)
+  .join("\n")}
 finally:
     sys.stdout = old_stdout
 
@@ -81,6 +96,18 @@ captured_output.getvalue()
         error: error.toString(),
       };
     }
+  }
+
+  // Clean Python code by removing pure comment lines and normalizing whitespace
+  cleanPythonCode(code) {
+    return code
+      .split("\n")
+      .filter((line) => {
+        const trimmed = line.trim();
+        // Keep non-empty lines that aren't pure comments
+        return trimmed && !trimmed.startsWith("#");
+      })
+      .join("\n");
   }
 
   // Execute JavaScript code
