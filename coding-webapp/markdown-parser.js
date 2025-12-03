@@ -233,7 +233,16 @@ class MarkdownParser {
 
   // Basic markdown parsing
   parseMarkdown(content) {
+    // Parse tables first (before other markdown elements)
+    content = this.parseTables(content);
+
+    // Parse lists (before headers to avoid conflicts)
+    content = this.parseLists(content);
+
     // Headers
+    content = content.replace(/^###### (.*$)/gim, "<h6>$1</h6>");
+    content = content.replace(/^##### (.*$)/gim, "<h5>$1</h5>");
+    content = content.replace(/^#### (.*$)/gim, "<h4>$1</h4>");
     content = content.replace(/^### (.*$)/gim, "<h3>$1</h3>");
     content = content.replace(/^## (.*$)/gim, "<h2>$1</h2>");
     content = content.replace(/^# (.*$)/gim, "<h1>$1</h1>");
@@ -262,10 +271,137 @@ class MarkdownParser {
       '<a href="$2" target="_blank">$1</a>'
     );
 
-    // Paragraphs
-    content = content.replace(/^(?!<[h|u|l|d|p])(.+)$/gim, "<p>$1</p>");
+    // Horizontal rules
+    content = content.replace(/^(?:[-*_]){3,}$/gim, "<hr>");
+
+    // Paragraphs (but not for existing HTML elements)
+    content = content.replace(
+      /^(?!<[h|u|l|d|p|t|b|c|r|h])(.+)$/gim,
+      "<p>$1</p>"
+    );
 
     return content;
+  }
+
+  // Parse markdown lists
+  parseLists(content) {
+    // Parse unordered lists
+    content = content.replace(/^(?:\s*)[-*+] (.+)$/gim, "<li>$1</li>");
+
+    // Parse ordered lists (numbered)
+    content = content.replace(/^(?:\s*)\d+\. (.+)$/gim, "<li>$1</li>");
+
+    // Wrap consecutive list items in appropriate list containers
+    // First, handle unordered lists
+    content = content.replace(
+      /(<li>.*?<\/li>(?:\s*<li>.*?<\/li>)*)/gims,
+      (match) => {
+        // Check if this is already inside a list by looking at previous content
+        return `<ul>${match}</ul>`;
+      }
+    );
+
+    // Then, handle ordered lists (numbered)
+    content = content.replace(
+      /(<li>.*?<\/li>(?:\s*<li>.*?<\/li>)*)/gims,
+      (match) => {
+        // Only convert to ol if it doesn't already start with ul
+        if (!match.trim().startsWith("<ul>")) {
+          return `<ol>${match}</ol>`;
+        }
+        return match;
+      }
+    );
+
+    return content;
+  }
+
+  // Parse markdown tables
+  parseTables(content) {
+    const tableRegex =
+      /^(?:\| (.+?) \|(?:\r?\n|$))+?\|? ?[-:|]+ ?\|(?:\r?\n)?((?:\| (.+?) \|(?:\r?\n|$))+)/gim;
+
+    let match;
+    while ((match = tableRegex.exec(content)) !== null) {
+      const fullMatch = match[0];
+      const headerLine = match[1].trim();
+      const alignmentLine = match[2];
+      const bodyLines = match[3];
+
+      console.log("Found table:", {
+        fullMatch,
+        headerLine,
+        alignmentLine,
+        bodyLines,
+      });
+
+      // Parse header row
+      const headers = this.parseTableRow(headerLine);
+
+      // Parse body rows
+      const rows = [];
+      const bodyRowRegex = /\| (.+?) \|/g;
+      let bodyMatch;
+      while ((bodyMatch = bodyRowRegex.exec(bodyLines)) !== null) {
+        const rowData = this.parseTableRow(bodyMatch[1]);
+        if (rowData.length > 0) {
+          rows.push(rowData);
+        }
+      }
+
+      // Generate HTML table
+      const tableHtml = this.generateTableHtml(headers, rows);
+
+      // Replace the table in content
+      content = content.replace(fullMatch, tableHtml);
+    }
+
+    return content;
+  }
+
+  // Parse a single table row
+  parseTableRow(rowString) {
+    return rowString
+      .split("|")
+      .map((cell) => cell.trim())
+      .filter((cell) => cell.length > 0)
+      .map((cell) => {
+        // Process inline markdown in table cells
+        cell = cell.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+        cell = cell.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+        cell = cell.replace(/`([^`]+)`/g, "<code>$1</code>");
+        return cell;
+      });
+  }
+
+  // Generate HTML table from parsed data
+  generateTableHtml(headers, rows) {
+    let html = '<div class="table-container"><table class="lesson-table">';
+
+    // Add header row
+    if (headers.length > 0) {
+      html += "<thead><tr>";
+      headers.forEach((header) => {
+        html += `<th>${header}</th>`;
+      });
+      html += "</tr></thead>";
+    }
+
+    // Add body rows
+    if (rows.length > 0) {
+      html += "<tbody>";
+      rows.forEach((row) => {
+        html += "<tr>";
+        row.forEach((cell) => {
+          html += `<td>${cell}</td>`;
+        });
+        html += "</tr>";
+      });
+      html += "</tbody>";
+    }
+
+    html += "</table></div>";
+    return html;
   }
 
   // Escape HTML entities
