@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Interactive coding exercises platform",
   "scripts": {
-    "start": "npx serve .",
+    "start": "python -m http.server 3000",
     "build": "node build-manifest.js",
-    "dev": "node build-manifest.js && npx serve ."
+    "dev": "node build-manifest.js && python -m http.server 3000"
   },
   "keywords": [
     "coding",

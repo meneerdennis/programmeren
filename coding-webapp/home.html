@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Selection - Coding Exercises</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .home-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .home-content {
+        background: white;
+        border-radius: 15px;
+        padding: 3rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .home-title {
+        color: #333;
+        margin-bottom: 1rem;
+        font-size: 2.5rem;
+        font-weight: 700;
+      }
+
+      .home-subtitle {
+        color: #666;
+        margin-bottom: 3rem;
+        font-size: 1.2rem;
+      }
+
+      .courses-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .course-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .course-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+      }
+
+      .course-card.python {
+        border-left: 5px solid #3776ab;
+      }
+
+      .course-card.html-css {
+        border-left: 5px solid #e34f26;
+      }
+
+      .course-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .course-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #333;
+      }
+
+      .course-description {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .course-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.9rem;
+        color: #888;
+      }
+
+      .course-difficulty {
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .difficulty-beginner {
+        background: #e8f5e8;
+        color: #2d5a2d;
+      }
+
+      .difficulty-intermediate {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .start-course-btn {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        margin-top: 1rem;
+      }
+
+      .start-course-btn:hover {
+        background: #5a67d8;
+      }
+
+      .features-section {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e0e0e0;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .feature-item {
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+      }
+
+      .feature-desc {
+        font-size: 0.9rem;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="home-container">
+      <div class="home-content">
+        <h1 class="home-title">Welcome to Coding Exercises</h1>
+        <p class="home-subtitle">
+          Choose a course to start your coding journey
+        </p>
+
+        <div class="courses-grid">
+          <!-- Python Course -->
+          <div class="course-card python" onclick="startCourse('python')">
+            <div class="course-icon">🐍</div>
+            <h2 class="course-title">Python Programming</h2>
+            <p class="course-description">
+              Learn Python from scratch with interactive exercises. Master the
+              fundamentals of programming including variables, loops, and
+              functions.
+            </p>
+            <div class="course-meta">
+              <span>5 Lessons</span>
+              <span class="course-difficulty difficulty-beginner"
+                >Beginner</span
+              >
+            </div>
+            <button class="start-course-btn">Start Python Course</button>
+          </div>
+
+          <!-- HTML & CSS Course -->
+          <div class="course-card html-css" onclick="startCourse('html-css')">
+            <div class="course-icon">🎨</div>
+            <h2 class="course-title">HTML & CSS</h2>
+            <p class="course-description">
+              Build beautiful web pages with HTML and CSS. Learn the structure
+              and styling of websites through hands-on exercises and projects.
+            </p>
+            <div class="course-meta">
+              <span>Coming Soon</span>
+              <span class="course-difficulty difficulty-intermediate"
+                >Intermediate</span
+              >
+            </div>
+            <button class="start-course-btn">Coming Soon</button>
+          </div>
+        </div>
+
+        <div class="features-section">
+          <h3 style="color: #333; margin-bottom: 1rem">What you'll get</h3>
+          <div class="features-grid">
+            <div class="feature-item">
+              <div class="feature-icon">💻</div>
+              <div class="feature-title">Interactive Exercises</div>
+              <div class="feature-desc">
+                Practice with real coding challenges
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🚀</div>
+              <div class="feature-title">Instant Feedback</div>
+              <div class="feature-desc">
+                Run code and see results immediately
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">📊</div>
+              <div class="feature-title">Progress Tracking</div>
+              <div class="feature-desc">Monitor your learning progress</div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">🎯</div>
+              <div class="feature-title">Hands-on Learning</div>
+              <div class="feature-desc">Learn by doing, not just reading</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function startCourse(courseType) {
+        // Store selected course type
+        localStorage.setItem("selectedCourse", courseType);
+
+        // Redirect to the main app
+        window.location.href = "index.html";
+      }
+
+      // Load available courses and their progress
+      async function loadCourseProgress() {
+        try {
+          // Check if there's any saved progress
+          const pythonProgress = localStorage.getItem("pythonCourseProgress");
+          const htmlCssProgress = localStorage.getItem("htmlCssCourseProgress");
+
+          // You could update the course cards with progress indicators here
+          // For now, we'll keep it simple
+        } catch (error) {
+          console.log("Could not load course progress");
+        }
+      }
+
+      // Initialize page
+      document.addEventListener("DOMContentLoaded", function () {
+        loadCourseProgress();
+      });
+    </script>
+  </body>
+</html>

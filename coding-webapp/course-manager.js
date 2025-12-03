@@ -4,40 +4,63 @@ class CourseManager {
     this.lessons = [];
     this.currentLessonIndex = 0;
     this.progress = this.loadProgress();
+    this.courseId = null;
+    this.courseManifest = null;
+  }
+
+  // Set the course to load
+  setCourse(courseId) {
+    this.courseId = courseId;
+    console.log("Course set to:", courseId);
   }
 
   // Load course content from organized directory structure
   async loadCourse() {
+    if (!this.courseId) {
+      console.error("No course ID set");
+      return false;
+    }
+
     try {
-      // Load lesson list from manifest file
+      // Load lesson list from course-specific manifest file
       let lessonFiles = [];
       try {
         const manifestResponse = await fetch(
-          "course-content/lessons/manifest.json"
+          `course-content/courses/${this.courseId}/manifest.json`
         );
         if (manifestResponse.ok) {
-          const manifest = await manifestResponse.json();
-          lessonFiles = manifest.lessons.map(
-            (file) => `course-content/lessons/${file}`
+          this.courseManifest = await manifestResponse.json();
+          lessonFiles = this.courseManifest.lessons.map(
+            (file) => `course-content/courses/${this.courseId}/${file}`
           );
           console.log("Loaded lessons from manifest:", lessonFiles);
+        } else {
+          throw new Error(
+            `Failed to load manifest for course ${this.courseId}`
+          );
         }
       } catch (manifestError) {
         console.warn(
-          "Could not load manifest, using fallback list:",
+          `Could not load manifest for course ${this.courseId}, using fallback list:`,
           manifestError
         );
       }
 
       // Fallback to hardcoded list if manifest fails
       if (lessonFiles.length === 0) {
-        lessonFiles = [
-          "course-content/lessons/1-getting-started.md",
-          "course-content/lessons/2-information-from-the-user.md",
-          "course-content/lessons/3-more-about-variables.md",
-          "course-content/lessons/4-arithmetic-operations.md",
-          "course-content/lessons/5-conditional-statements.md",
-        ];
+        if (this.courseId === "python") {
+          lessonFiles = [
+            `course-content/courses/python/1-getting-started.md`,
+            `course-content/courses/python/2-information-from-the-user.md`,
+            `course-content/courses/python/3-more-about-variables.md`,
+            `course-content/courses/python/4-arithmetic-operations.md`,
+            `course-content/courses/python/5-conditional-statements.md`,
+          ];
+        } else {
+          lessonFiles = [
+            `course-content/courses/${this.courseId}/1-introduction.md`,
+          ];
+        }
       }
 
       this.lessons = [];
@@ -192,8 +215,9 @@ class CourseManager {
   // Save progress to localStorage
   saveProgress() {
     try {
+      const progressKey = `courseProgress_${this.courseId}`;
       localStorage.setItem(
-        "courseProgress",
+        progressKey,
         JSON.stringify({
           currentLessonIndex: this.currentLessonIndex,
           completedExercises: this.progress.completedExercises || [],
@@ -208,7 +232,8 @@ class CourseManager {
   // Load progress from localStorage
   loadProgress() {
     try {
-      const saved = localStorage.getItem("courseProgress");
+      const progressKey = `courseProgress_${this.courseId}`;
+      const saved = localStorage.getItem(progressKey);
       if (saved) {
         return JSON.parse(saved);
       }
@@ -277,7 +302,8 @@ class CourseManager {
       progress: this.progress,
       courseInfo: {
         totalLessons: this.lessons.length,
-        courseTitle: "Coding Exercises",
+        courseTitle: this.courseManifest?.course?.title || "Coding Exercises",
+        courseId: this.courseId,
       },
       exportDate: new Date().toISOString(),
     };

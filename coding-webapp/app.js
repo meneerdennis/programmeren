@@ -14,6 +14,17 @@ class CodingExercisesApp {
   async init() {
     console.log("Initializing CodingExercisesApp...");
 
+    // Check if a course is selected, if not redirect to home
+    const selectedCourse = localStorage.getItem("selectedCourse");
+    if (!selectedCourse) {
+      console.log("No course selected, redirecting to home page");
+      window.location.href = "home.html";
+      return;
+    }
+
+    // Set the course in the course manager
+    this.courseManager.setCourse(selectedCourse);
+
     // Set timeout for lesson loading
     const loadingTimeout = setTimeout(() => {
       console.warn(
@@ -27,6 +38,7 @@ class CodingExercisesApp {
       await this.loadLesson();
       this.setupEventListeners();
       this.updateNavigationButtons();
+      this.addHomeButton();
       console.log("App initialized successfully");
 
       // Clear timeout if loading completed successfully
@@ -750,6 +762,40 @@ class CodingExercisesApp {
   search(query) {
     const results = this.courseManager.searchLessons(query);
     return results;
+  }
+
+  // Add home button to navigation
+  addHomeButton() {
+    const header = document.querySelector(".app-header");
+    if (!header) return;
+
+    const homeButton = document.createElement("button");
+    homeButton.id = "home-btn";
+    homeButton.className = "home-btn";
+    homeButton.innerHTML = "🏠 Home";
+    homeButton.style.cssText = `
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    `;
+
+    homeButton.addEventListener("click", () => {
+      // Clear selected course
+      localStorage.removeItem("selectedCourse");
+      // Redirect to home
+      window.location.href = "home.html";
+    });
+
+    // Insert at the beginning of the nav
+    const nav = header.querySelector(".course-nav");
+    if (nav) {
+      nav.insertBefore(homeButton, nav.firstChild);
+    }
   }
 }
 

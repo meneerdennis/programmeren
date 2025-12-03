@@ -1,0 +1,20 @@
+{
+  "course": {
+    "id": "html-css",
+    "title": "HTML & CSS",
+    "description": "Build beautiful web pages with HTML and CSS",
+    "language": "html",
+    "difficulty": "intermediate",
+    "icon": "🎨"
+  },
+  "lessons": [
+    "1-html-basics.md",
+    "2-text-formatting.md",
+    "3-links-and-images.md",
+    "4-css-introduction.md",
+    "5-styling-text.md",
+    "6-box-model.md",
+    "7-layout-fundamentals.md",
+    "8-responsive-design.md"
+  ]
+}
