@@ -155,18 +155,41 @@ captured_output.getvalue()
   // Execute HTML code
   async executeHTML(code) {
     try {
+      // Check if this is a complete HTML document
+      const isCompleteDoc =
+        code.includes("<!DOCTYPE") ||
+        (code.includes("<html") && code.includes("</html>"));
+
+      if (!isCompleteDoc) {
+        // Wrap in basic HTML structure if not complete
+        const wrappedCode = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Preview</title>
+</head>
+<body>
+${code}
+</body>
+</html>`;
+        code = wrappedCode;
+      }
+
       // Create a temporary container to test HTML validity
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = code;
 
       // Check for basic HTML validity
       const parser = new DOMParser();
-      const doc = parser.parseFromString(
-        `<html><body>${code}</body></html>`,
-        "text/html"
-      );
+      const doc = parser.parseFromString(code, "text/html");
 
       const errors = [];
+
+      // Check for parsing errors
+      const parserErrors = doc.querySelectorAll("parsererror");
+      if (parserErrors.length > 0) {
+        errors.push("HTML parsing failed: " + parserErrors[0].textContent);
+      }
 
       // Check for unclosed tags (basic check)
       const openTags = [];
@@ -202,7 +225,7 @@ captured_output.getvalue()
 
       return {
         success: true,
-        output: "HTML structure is valid",
+        output: "HTML structure is valid and ready for preview",
         error: "",
       };
     } catch (error) {

@@ -8,6 +8,10 @@ class CodingExercisesApp {
     this.currentExercise = null;
     this.availableCourses = [];
     this.currentCourseId = null;
+    this.htmlEditor = null; // For HTML/CSS course
+    this.cssEditor = null; // For HTML/CSS course
+    this.activeTab = "html"; // 'html' or 'css'
+    this.isHtmlCssCourse = false;
 
     this.init();
   }
@@ -226,8 +230,12 @@ class CodingExercisesApp {
     this.currentCourseId = courseId;
     localStorage.setItem("selectedCourse", courseId);
 
+    // Check if this is HTML/CSS course
+    this.isHtmlCssCourse = courseId === "html-css";
+
     // Update UI immediately
     this.renderSidebar();
+    this.updateCourseUI();
 
     // Reset course manager and load new course
     this.courseManager.setCourse(courseId);
@@ -261,10 +269,16 @@ class CodingExercisesApp {
     this.currentCourseId = selectedCourse;
     this.courseManager.setCourse(selectedCourse);
 
+    // Check if this is HTML/CSS course
+    this.isHtmlCssCourse = selectedCourse === "html-css";
+
     console.log("Initializing current course:", selectedCourse);
 
     // Ensure sidebar shows the current course as active
     this.renderSidebar();
+
+    // Update course-specific UI
+    this.updateCourseUI();
 
     try {
       await this.courseManager.loadCourse();
@@ -514,14 +528,26 @@ class CodingExercisesApp {
     }
     // Exercise panel is always visible now
 
+    // Extract starter code from exercise content
+    const starterCode = this.extractStarterCode(exercise.content);
+    console.log("Starter code extracted:", starterCode);
+
     // Set editor language (only for Monaco editor)
     if (this.setEditorLanguage) {
       this.setEditorLanguage(exercise.language);
     }
 
-    // Extract starter code from exercise content
-    const starterCode = this.extractStarterCode(exercise.content);
-    console.log("Starter code extracted:", starterCode);
+    // For HTML/CSS course, update the active editor with starter code
+    if (this.isHtmlCssCourse) {
+      if (starterCode && exercise.language === "html") {
+        this.htmlEditor.setValue(starterCode);
+      } else if (starterCode && exercise.language === "css") {
+        this.cssEditor.setValue(starterCode);
+      }
+      // Update preview
+      this.updatePreview();
+      return;
+    }
 
     // Use exercise content as a helpful hint, or starter code if available
     let editorContent = "";
@@ -668,30 +694,45 @@ class CodingExercisesApp {
 
   // Set editor language based on exercise type
   setEditorLanguage(language) {
-    // Only apply language for Monaco editor
-    if (typeof monaco !== "undefined" && this.editor.getModel) {
-      let monacoLanguage = "javascript";
-
-      switch (language) {
-        case "python":
-          monacoLanguage = "python";
-          break;
-        case "html":
-          monacoLanguage = "html";
-          break;
-        case "css":
-          monacoLanguage = "css";
-          break;
-        case "javascript":
-        default:
-          monacoLanguage = "javascript";
-          break;
+    if (this.isHtmlCssCourse) {
+      // For HTML/CSS course, set language on the active editor
+      const activeEditor =
+        this.activeTab === "html" ? this.htmlEditor : this.cssEditor;
+      if (
+        activeEditor &&
+        typeof monaco !== "undefined" &&
+        activeEditor.getModel
+      ) {
+        monaco.editor.setModelLanguage(activeEditor.getModel(), language);
       }
+    } else {
+      // For Python course, use the standard editor
+      if (
+        typeof monaco !== "undefined" &&
+        this.editor &&
+        this.editor.getModel
+      ) {
+        let monacoLanguage = "javascript";
 
-      const model = this.editor.getModel();
-      monaco.editor.setModelLanguage(model, monacoLanguage);
+        switch (language) {
+          case "python":
+            monacoLanguage = "python";
+            break;
+          case "html":
+            monacoLanguage = "html";
+            break;
+          case "css":
+            monacoLanguage = "css";
+            break;
+          case "javascript":
+          default:
+            monacoLanguage = "javascript";
+            break;
+        }
+
+        monaco.editor.setModelLanguage(this.editor.getModel(), monacoLanguage);
+      }
     }
-    // For fallback editor, language doesn't matter as it's just a textarea
   }
 
   // Setup event listeners
@@ -814,38 +855,64 @@ class CodingExercisesApp {
 
   // Run code
   async runCode() {
-    const code = this.editor.getValue();
-    let language = "python"; // Default to Python
+    let code, language;
 
-    // If there's a current exercise, use its language
-    if (this.currentExercise) {
-      language = this.currentExercise.language;
-    }
+    if (this.isHtmlCssCourse) {
+      // For HTML/CSS course, combine HTML and CSS
+      const htmlCode = this.htmlEditor ? this.htmlEditor.getValue() : "";
+      const cssCode = this.cssEditor ? this.cssEditor.getValue() : "";
 
-    console.log("Running code:", { code, language });
+      // Use HTML as primary language for execution
+      code = htmlCode;
+      language = "html";
 
-    this.showOutput("loading", "Running code...");
+      console.log("Running HTML/CSS code:", { htmlCode, cssCode });
 
-    try {
-      const result = await this.executor.execute(code, language);
-      const formatted = this.executor.formatOutput(result);
-      console.log("Execution result:", result);
+      // Update live preview immediately
+      this.updatePreview();
 
-      // If code executed successfully but produced no output, give helpful feedback
-      if (result.success && !result.output.trim()) {
-        if (language === "python") {
-          this.showOutput(
-            "error",
-            "Your code ran successfully but produced no output. Make sure you're using print() statements."
-          );
-        } else {
-          this.showOutput("success", "Code executed successfully (no output)");
-        }
-      } else {
-        this.showOutput(formatted.className, formatted.text);
+      this.showOutput(
+        "success",
+        "Live preview updated! Check the preview panel to see your HTML/CSS."
+      );
+    } else {
+      // For Python course, use standard editor
+      code = this.editor.getValue();
+      language = "python"; // Default to Python
+
+      // If there's a current exercise, use its language
+      if (this.currentExercise) {
+        language = this.currentExercise.language;
       }
-    } catch (error) {
-      this.showOutput("error", `Execution failed: ${error.message}`);
+
+      console.log("Running code:", { code, language });
+
+      this.showOutput("loading", "Running code...");
+
+      try {
+        const result = await this.executor.execute(code, language);
+        const formatted = this.executor.formatOutput(result);
+        console.log("Execution result:", result);
+
+        // If code executed successfully but produced no output, give helpful feedback
+        if (result.success && !result.output.trim()) {
+          if (language === "python") {
+            this.showOutput(
+              "error",
+              "Your code ran successfully but produced no output. Make sure you're using print() statements."
+            );
+          } else {
+            this.showOutput(
+              "success",
+              "Code executed successfully (no output)"
+            );
+          }
+        } else {
+          this.showOutput(formatted.className, formatted.text);
+        }
+      } catch (error) {
+        this.showOutput("error", `Execution failed: ${error.message}`);
+      }
     }
   }
 
@@ -856,42 +923,70 @@ class CodingExercisesApp {
       return;
     }
 
-    const code = this.editor.getValue();
-    const language = this.currentExercise.language;
-    const expectedOutput = this.currentExercise.expectedOutput || "";
+    if (this.isHtmlCssCourse) {
+      // For HTML/CSS exercises, validate the HTML structure
+      const htmlCode = this.htmlEditor ? this.htmlEditor.getValue() : "";
+      const language = this.currentExercise.language || "html";
 
-    this.showOutput("loading", "Checking solution...");
+      this.showOutput("loading", "Validating HTML structure...");
 
-    try {
-      const result = await this.executor.execute(code, language);
+      try {
+        const result = await this.executor.execute(htmlCode, language);
 
-      if (!result.success) {
-        this.showOutput("error", `Code failed to run: ${result.error}`);
-        return;
-      }
+        if (!result.success) {
+          this.showOutput("error", `HTML validation failed: ${result.error}`);
+          return;
+        }
 
-      // Compare outputs
-      const isCorrect = this.executor.compareOutputs(
-        result.output,
-        expectedOutput,
-        language
-      );
-
-      if (isCorrect) {
-        this.showOutput("success", "🎉 Correct! Well done!");
+        // For HTML exercises, consider it correct if HTML is valid
+        this.showOutput("success", "🎉 Great! Your HTML structure is valid!");
         this.courseManager.markExerciseCompleted(this.currentExercise.id);
         this.updateProgress();
 
         // Mark exercise as completed in UI
         this.markExerciseAsCompleted(this.currentExercise.id);
-      } else {
-        this.showOutput(
-          "error",
-          `❌ Output doesn't match expected result.\n\nExpected:\n${expectedOutput}\n\nYour output:\n${result.output}`
-        );
+      } catch (error) {
+        this.showOutput("error", `Validation failed: ${error.message}`);
       }
-    } catch (error) {
-      this.showOutput("error", `Checking failed: ${error.message}`);
+    } else {
+      // For Python exercises, use existing logic
+      const code = this.editor.getValue();
+      const language = this.currentExercise.language;
+      const expectedOutput = this.currentExercise.expectedOutput || "";
+
+      this.showOutput("loading", "Checking solution...");
+
+      try {
+        const result = await this.executor.execute(code, language);
+
+        if (!result.success) {
+          this.showOutput("error", `Code failed to run: ${result.error}`);
+          return;
+        }
+
+        // Compare outputs
+        const isCorrect = this.executor.compareOutputs(
+          result.output,
+          expectedOutput,
+          language
+        );
+
+        if (isCorrect) {
+          this.showOutput("success", "🎉 Correct! Well done!");
+          this.courseManager.markExerciseCompleted(this.currentExercise.id);
+          this.updateProgress();
+
+          // Mark exercise as completed in UI
+          this.markExerciseAsCompleted(this.currentExercise.id);
+        } else {
+          this.showOutput(
+            "error",
+            `❌ Output doesn't match expected result.\n\nExpected:\n${expectedOutput}\n\nYour output:\n${result.output}`
+          );
+        }
+      } catch (error) {
+        this.showOutput("error", `Checking failed: ${error.message}`);
+      }
     }
   }
 
@@ -948,6 +1043,312 @@ class CodingExercisesApp {
         id: l.id,
       })),
     });
+  }
+
+  // Update course-specific UI
+  updateCourseUI() {
+    const tabs = document.getElementById("editor-tabs");
+    const previewPanel = document.getElementById("preview-panel");
+    const exerciseTitle = document.getElementById("exercise-title");
+
+    if (this.isHtmlCssCourse) {
+      // Show HTML/CSS specific UI
+      tabs.style.display = "flex";
+      previewPanel.style.display = "block";
+      exerciseTitle.textContent = "HTML/CSS Editor";
+
+      console.log("Setting up HTML/CSS course UI...");
+
+      // Setup HTML/CSS editors if not already setup
+      if (!this.htmlEditor || !this.cssEditor) {
+        this.setupHtmlCssEditors();
+      } else {
+        // If editors already exist, just update the preview
+        console.log("Editors already exist, updating preview...");
+        this.updatePreview();
+      }
+    } else {
+      // Show standard Python editor UI
+      tabs.style.display = "none";
+      previewPanel.style.display = "none";
+      exerciseTitle.textContent = "Python Editor";
+
+      // Clean up HTML/CSS editors
+      this.cleanupHtmlCssEditors();
+    }
+  }
+
+  // Setup HTML and CSS editors for HTML/CSS course
+  setupHtmlCssEditors() {
+    console.log("Setting up HTML/CSS editors...");
+
+    // Setup tab switching
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const tab = e.target.dataset.tab;
+        this.switchTab(tab);
+      });
+    });
+
+    // Setup preview refresh
+    const refreshBtn = document.getElementById("refresh-preview");
+    refreshBtn.addEventListener("click", () => {
+      this.updatePreview();
+    });
+
+    // Set initial active tab (this will create the editors)
+    this.switchTab("html");
+
+    // Initialize preview with current content
+    setTimeout(() => {
+      this.updatePreview();
+      console.log("Initial preview update completed");
+    }, 500);
+  }
+
+  // Switch between HTML and CSS tabs
+  switchTab(tab) {
+    this.activeTab = tab;
+    console.log("Switching to tab:", tab);
+
+    // Update tab buttons
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      if (btn.dataset.tab === tab) {
+        btn.classList.add("active");
+      }
+    });
+
+    // Clear code-editor and show only the active editor
+    const codeEditor = document.getElementById("code-editor");
+    codeEditor.innerHTML = ""; // Clear existing content
+
+    if (tab === "html") {
+      // Recreate HTML editor container
+      const htmlContainer = document.createElement("div");
+      htmlContainer.id = "html-editor";
+      htmlContainer.style.width = "100%";
+      htmlContainer.style.height = "300px";
+      htmlContainer.style.display = "block";
+      codeEditor.appendChild(htmlContainer);
+
+      console.log("HTML tab selected, creating HTML editor");
+
+      // Create or recreate HTML editor
+      if (this.htmlEditor) {
+        this.htmlEditor.dispose();
+      }
+
+      if (typeof monaco !== "undefined") {
+        this.htmlEditor = monaco.editor.create(htmlContainer, {
+          value:
+            '<!DOCTYPE html>\n<html>\n<head>\n    <meta charset="UTF-8">\n    <title>My Web Page</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n    <p>Welcome to HTML!</p>\n</body>\n</html>',
+          language: "html",
+          theme: "vs-light",
+          fontSize: 14,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+          lineNumbers: "on",
+          wordWrap: "on",
+        });
+
+        // Handle editor changes
+        this.htmlEditor.onDidChangeModelContent(() => {
+          clearTimeout(this.previewTimeout);
+          this.previewTimeout = setTimeout(() => {
+            this.updatePreview();
+          }, 500);
+        });
+      } else {
+        // Fallback textarea
+        htmlContainer.innerHTML = `<textarea style="width: 100%; height: 300px; font-family: 'Courier New', monospace; font-size: 14px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; background: #f8f9fa;"><!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Web Page</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>Welcome to HTML!</p>
+</body>
+</html></textarea>`;
+
+        const textarea = htmlContainer.querySelector("textarea");
+        this.htmlEditor = {
+          getValue: () => textarea.value,
+          setValue: (value) => (textarea.value = value),
+          focus: () => textarea.focus(),
+          getModel: () => ({ getLanguageId: () => "html" }),
+          dispose: () => {},
+        };
+
+        textarea.addEventListener("input", () => {
+          clearTimeout(this.previewTimeout);
+          this.previewTimeout = setTimeout(() => {
+            this.updatePreview();
+          }, 500);
+        });
+      }
+    } else {
+      // CSS tab
+      const cssContainer = document.createElement("div");
+      cssContainer.id = "css-editor";
+      cssContainer.style.width = "100%";
+      cssContainer.style.height = "300px";
+      cssContainer.style.display = "block";
+      codeEditor.appendChild(cssContainer);
+
+      console.log("CSS tab selected, creating CSS editor");
+
+      // Create or recreate CSS editor
+      if (this.cssEditor) {
+        this.cssEditor.dispose();
+      }
+
+      if (typeof monaco !== "undefined") {
+        this.cssEditor = monaco.editor.create(cssContainer, {
+          value:
+            "body {\n    font-family: Arial, sans-serif;\n    margin: 20px;\n    background-color: #f0f0f0;\n}\n\nh1 {\n    color: #333;\n    text-align: center;\n}",
+          language: "css",
+          theme: "vs-light",
+          fontSize: 14,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          automaticLayout: true,
+          lineNumbers: "on",
+          wordWrap: "on",
+        });
+
+        // Handle editor changes
+        this.cssEditor.onDidChangeModelContent(() => {
+          clearTimeout(this.previewTimeout);
+          this.previewTimeout = setTimeout(() => {
+            this.updatePreview();
+          }, 500);
+        });
+      } else {
+        // Fallback textarea
+        cssContainer.innerHTML = `<textarea style="width: 100%; height: 300px; font-family: 'Courier New', monospace; font-size: 14px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; background: #f8f9fa;">body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}</textarea>`;
+
+        const textarea = cssContainer.querySelector("textarea");
+        this.cssEditor = {
+          getValue: () => textarea.value,
+          setValue: (value) => (textarea.value = value),
+          focus: () => textarea.focus(),
+          getModel: () => ({ getLanguageId: () => "css" }),
+          dispose: () => {},
+        };
+
+        textarea.addEventListener("input", () => {
+          clearTimeout(this.previewTimeout);
+          this.previewTimeout = setTimeout(() => {
+            this.updatePreview();
+          }, 500);
+        });
+      }
+    }
+
+    // Trigger editor layout after creation
+    setTimeout(() => {
+      if (this.htmlEditor && typeof this.htmlEditor.layout === "function") {
+        this.htmlEditor.layout();
+      }
+      if (this.cssEditor && typeof this.cssEditor.layout === "function") {
+        this.cssEditor.layout();
+      }
+    }, 100);
+
+    // Update preview
+    this.updatePreview();
+  }
+
+  // Update live preview
+  updatePreview() {
+    if (!this.isHtmlCssCourse) return;
+
+    console.log("Updating preview...");
+
+    const htmlCode = this.htmlEditor ? this.htmlEditor.getValue() : "";
+    const cssCode = this.cssEditor ? this.cssEditor.getValue() : "";
+
+    console.log("HTML code:", htmlCode);
+    console.log("CSS code:", cssCode);
+
+    // Create complete HTML document with CSS
+    const fullHtml = this.combineHtmlCss(htmlCode, cssCode);
+
+    console.log("Combined HTML:", fullHtml);
+
+    // Update iframe
+    const iframe = document.getElementById("preview-iframe");
+    if (iframe) {
+      iframe.srcdoc = fullHtml;
+      console.log("Preview updated successfully");
+    } else {
+      console.error("Preview iframe not found");
+    }
+  }
+
+  // Combine HTML and CSS into complete document
+  combineHtmlCss(htmlCode, cssCode) {
+    // Check if HTML already has a head section
+    const hasHead = htmlCode.includes("<head>") || htmlCode.includes("<HEAD>");
+
+    let combinedHtml = htmlCode;
+
+    if (cssCode.trim()) {
+      const styleTag = `<style>\n${cssCode}\n</style>`;
+
+      if (hasHead) {
+        // Insert CSS into existing head
+        combinedHtml = htmlCode.replace(/<\/head>/i, `${styleTag}\n</head>`);
+      } else {
+        // Add head with CSS before body
+        const headWithStyle = `<head>\n    <meta charset="UTF-8">\n    ${styleTag}\n</head>`;
+        combinedHtml = htmlCode.replace(
+          /<body[^>]*>/i,
+          `${headWithStyle}\n<body$1>`
+        );
+      }
+    }
+
+    // Ensure proper DOCTYPE
+    if (!combinedHtml.trim().startsWith("<!DOCTYPE")) {
+      combinedHtml = "<!DOCTYPE html>\n" + combinedHtml;
+    }
+
+    return combinedHtml;
+  }
+
+  // Clean up HTML/CSS editors
+  cleanupHtmlCssEditors() {
+    if (this.htmlEditor) {
+      this.htmlEditor.dispose();
+      this.htmlEditor = null;
+    }
+    if (this.cssEditor) {
+      this.cssEditor.dispose();
+      this.cssEditor = null;
+    }
+
+    // Remove editor containers
+    const htmlContainer = document.getElementById("html-editor");
+    const cssContainer = document.getElementById("css-editor");
+    if (htmlContainer) htmlContainer.remove();
+    if (cssContainer) cssContainer.remove();
+
+    // Recreate the standard Python editor
+    this.setupEditor();
   }
 
   // Update progress display
