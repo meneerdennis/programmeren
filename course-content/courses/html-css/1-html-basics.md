@@ -1,216 +1,221 @@
 ---
 path: "/html-css/1-html-basics"
-title: "HTML Basics"
+title: "HTML Basis"
 hidden: false
 ---
 
-<text-box variant='learningObjectives' name='Learning objectives'>
+<text-box variant='learningObjectives' name='Leerdoelen'>
 
-After this section:
+Na deze sectie:
 
-- You will understand what HTML is and why it's used
-- You will know the basic structure of an HTML document
-- You will be able to create simple HTML elements
-- You will understand the difference between block and inline elements
+- Zul je begrijpen wat HTML is en waarom het gebruikt wordt
+- Zul je de basisstructuur van een HTML document kennen
+- Zul je eenvoudige HTML elementen kunnen maken
+- Zul je het verschil begrijpen tussen block en inline elementen
 
 </text-box>
 
-HTML (HyperText Markup Language) is the standard markup language for creating web pages. It describes the structure of a web page using markup tags.
+HTML (HyperText Markup Language) is de standaard opmaaktaal voor het maken van webpagina's. Het beschrijft de structuur van een webpagina met behulp van opmaak tags.
 
-Think of HTML as the skeleton of a website - it provides the basic structure thatCSS (for styling) and JavaScript (for interactivity) can build upon.
+Denk aan HTML als het skelet van een website - het biedt de basisstructuur waarop CSS (voor styling) en JavaScript (voor interactiviteit) kunnen bouwen.
 
-## Basic HTML Document Structure
+## Basis HTML Document Structuur
 
-Every HTML document follows a basic structure. Here's a simple example:
+Elk HTML document volgt een basisstructuur. Hier is een eenvoudig voorbeeld:
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My First Webpage</title>
+    <title>Mijn Eerste Webpagina</title>
   </head>
   <body>
-    <h1>Welcome to My Website</h1>
-    <p>This is my first paragraph.</p>
+    <h1>Welkom op Mijn Website</h1>
+    <p>Dit is mijn eerste alinea.</p>
   </body>
 </html>
 ```
 
-Let's break down what each part does:
+Laten we uit elkaar halen wat elk deel doet:
 
-- `<!DOCTYPE html>` - Declares this as an HTML5 document
-- `<html>` - The root element that contains all other elements
-- `<head>` - Contains metadata about the document
-- `<title>` - Specifies the title shown in the browser tab
-- `<body>` - Contains all visible content
+- `<!DOCTYPE html>` - Verklaart dit als een HTML5 document
+- `<html>` - Het root element dat alle andere elementen bevat
+- `<head>` - Bevat metadata over het document
+- `<title>` - Specificeert de titel die getoond wordt in het browser tabblad
+- `<body>` - Bevat alle zichtbare inhoud
 
-## HTML Elements
+## HTML Elementen
 
-HTML elements are defined by tags. Most elements have an opening tag and a closing tag:
+HTML elementen worden gedefinieerd door tags. De meeste elementen hebben een opening tag en een closing tag:
 
 ```html
-<tagname>Content goes here</tagname>
+<tagname>Inhoud gaat hier</tagname>
 ```
 
-Some elements are self-closing (they don't need closing tags):
+Sommige elementen zijn self-closing (ze hebben geen closing tags nodig):
 
 ```html
-<img src="image.jpg" alt="Description" />
+<img src="image.jpg" alt="Beschrijving" />
 <br />
 <hr />
 ```
 
-## Common HTML Elements
+## Veelvoorkomende HTML Elementen
 
-### Headings
+### Koppen
 
-HTML provides six levels of headings, from `<h1>` (most important) to `<h6>` (least important):
+HTML biedt zes niveaus van koppen, van `<h1>` (meest belangrijk) tot `<h6>` (minst belangrijk):
 
 ```html
-<h1>This is a main heading</h1>
-<h2>This is a subheading</h2>
-<h3>This is a smaller subheading</h3>
+<h1>Dit is een hoofdkop</h1>
+<h2>Dit is een subkop</h2>
+<h3>Dit is een kleinere subkop</h3>
 ```
 
-### Paragraphs
+### Alinea's
 
-Use `<p>` tags to create paragraphs of text:
+Gebruik `<p>` tags om alinea's van tekst te maken:
 
 ```html
 <p>
-  This is a paragraph of text. It can contain multiple sentences and will wrap
-  to fit the width of its container.
+  Dit is een alinea van tekst. Het kan meerdere zinnen bevatten en zal
+  automatisch ombreken om te passen binnen de breedte van zijn container.
 </p>
 ```
 
 ### Links
 
-Create hyperlinks using the `<a>` (anchor) tag:
+Maak hyperlinks met de `<a>` (anker) tag:
 
 ```html
-<a href="https://www.example.com">Click here to visit Example.com</a>
+<a href="https://www.example.com">Klik hier om Example.com te bezoeken</a>
 ```
 
-### Images
+### Afbeeldingen
 
-Add images using the `<img>` tag:
+Voeg afbeeldingen toe met de `<img>` tag:
 
 ```html
-<img src="path/to/image.jpg" alt="Description of the image" />
+<img src="pad/naar/afbeelding.jpg" alt="Beschrijving van de afbeelding" />
 ```
 
-### Lists
+### Lijsten
 
-**Unordered lists** (bullet points):
+**Ongeordende lijsten** (opsommingstekens):
 
 ```html
 <ul>
-  <li>First item</li>
-  <li>Second item</li>
-  <li>Third item</li>
+  <li>Eerste item</li>
+  <li>Tweede item</li>
+  <li>Derde item</li>
 </ul>
 ```
 
-**Ordered lists** (numbered):
+**Geordende lijsten** (genummerd):
 
 ```html
 <ol>
-  <li>First step</li>
-  <li>Second step</li>
-  <li>Third step</li>
+  <li>Eerste stap</li>
+  <li>Tweede stap</li>
+  <li>Derde stap</li>
 </ol>
 ```
 
-<in-browser-programming-exercise name="Create your first heading" tmcname="html-01-first-heading">
+<in-browser-programming-exercise name="Maak je eerste kop" tmcname="html-01-first-heading">
 
-Create an HTML document with an `<h1>` element that says "Hello, World!".
+Maak een HTML document met een `<h1>` element dat "Hallo, Wereld!" zegt.
 
 ```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My First Page</title>
+    <title>Mijn Eerste Pagina</title>
   </head>
   <body>
-    <!-- Your h1 element should go here -->
+    <!-- Je h1 element zou hier moeten komen -->
   </body>
 </html>
 ```
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Create a simple webpage" tmcname="html-02-simple-webpage">
+<in-browser-programming-exercise name="Maak een eenvoudige webpagina" tmcname="html-02-simple-webpage">
 
-Create a simple webpage with the following elements:
+Maak een eenvoudige webpagina met de volgende elementen:
 
-- An `<h1>` heading with the text "My Favorite Hobbies"
-- A `<p>` paragraph describing your favorite hobby
-- An unordered list with at least 3 hobbies
+- Een `<h1>` kop met de tekst "Mijn Favoriete Hobby's"
+- Een `<p>` alinea die je favoriete hobby beschrijft
+- Een ongeordende lijst met minimaal 3 hobby's
 
 </in-browser-programming-exercise>
 
-## Block vs Inline Elements
+## Block vs Inline Elementen
 
-### Block Elements
+### Block Elementen
 
-Block elements always start on a new line and take up the full width available:
+Block elementen beginnen altijd op een nieuwe regel en nemen de volledige beschikbare breedte in beslag:
 
 ```html
-<h1>This is a block element</h1>
-<p>This is also a block element</p>
-<div>This is a block element too</div>
+<h1>Dit is een block element</h1>
+<p>Dit is ook een block element</p>
+<div>Dit is ook een block element</div>
 ```
 
-### Inline Elements
+### Inline Elementen
 
-Inline elements do not start on a new line and only take up as much width as necessary:
+Inline elementen beginnen niet op een nieuwe regel en nemen alleen zo veel breedte in beslag als nodig is:
 
 ```html
-<a href="#">This is an inline element</a>
-<strong>This is also inline</strong>
-<em>This is inline as well</em>
+<a href="#">Dit is een inline element</a>
+<strong>Dit is ook inline</strong>
+<em>Dit is ook inline</em>
 ```
 
 <in-browser-programming-exercise name="Block vs Inline" tmcname="html-03-block-inline">
 
-Create a paragraph that contains both block and inline elements. The paragraph should contain:
+Maak een alinea die zowel block als inline elementen bevat. De alinea zou moeten bevatten:
 
-- A `<strong>` element to emphasize important text
-- An `<em>` element for italicized text
-- An `<a>` link element
-- A `<br>` line break
+- Een `<strong>` element om belangrijke tekst te benadrukken
+- Een `<em>` element voor cursieve tekst
+- Een `<a>` link element
+- Een `<br>` regelafbreking
 
 </in-browser-programming-exercise>
 
-## Attributes
+## Attributen
 
-HTML elements can have attributes that provide additional information about the element:
+HTML elementen kunnen attributen hebben die extra informatie over het element geven:
 
 ```html
-<img src="photo.jpg" alt="A beautiful sunset" width="300" height="200" />
-<a href="mailto:someone@example.com">Email me</a>
-<p class="intro">This paragraph has a class</p>
+<img
+  src="photo.jpg"
+  alt="Een prachtige zonsondergang"
+  width="300"
+  height="200"
+/>
+<a href="mailto:iemand@example.com">Email me</a>
+<p class="intro">Deze alinea heeft een class</p>
 ```
 
-Common attributes include:
+Veelvoorkomende attributen zijn:
 
-- `src` - Source of an image or other resource
-- `href` - URL for links
-- `alt` - Alternative text for images
-- `class` - CSS class name
-- `id` - Unique identifier
+- `src` - Bron van een afbeelding of andere resource
+- `href` - URL voor links
+- `alt` - Alternatieve tekst voor afbeeldingen
+- `class` - CSS class naam
+- `id` - Unieke identifier
 - `style` - Inline CSS styling
 
-<in-browser-programming-exercise name="Adding attributes" tmcname="html-04-attributes">
+<in-browser-programming-exercise name="Attributen toevoegen" tmcname="html-04-attributes">
 
-Create a link that:
+Maak een link die:
 
-- Points to "https://www.w3schools.com"
-- Opens in a new tab (use `target="_blank"`)
-- Has the text "Learn HTML at W3Schools"
+- Wijst naar "https://www.w3schools.com"
+- Opent in een nieuw tabblad (gebruik `target="_blank"`)
+- De tekst "Leer HTML bij W3Schools" heeft
 
 </in-browser-programming-exercise>

@@ -1,68 +1,68 @@
 ---
 path: "/python/5-conditional-statements"
-title: "Conditional statements"
+title: "Voorwaardelijke statements"
 hidden: false
 ---
 
-<text-box variant='learningObjectives' name="Learning objectives">
+<text-box variant='learningObjectives' name="Leerdoelen">
 
-After this section
+Na deze sectie
 
-- You will be able to use a simple conditional statement in programming
-- You will know what a Boolean value is
-- You will be able to express conditionals with comparison operators
+- Zul je een eenvoudige voorwaardelijke statement kunnen gebruiken in programmeren
+- Zul je weten wat een Boolean waarde is
+- Zul je voorwaardelijke statements kunnen uitdrukken met vergelijkingsoperatoren
 
 </text-box>
 
-Thus far, every program we have written has been executed line by line in order. Instead of executing every line of code every single time a program is run, it is often useful to create sections of the program which are only executed in certain situations.
+Tot nu toe is elk programma dat we geschreven hebben regel voor regel in volgorde uitgevoerd. In plaats van elke regel code elke keer uit te voeren wanneer een programma gedraaid wordt, is het vaak nuttig om secties van het programma te maken die alleen in bepaalde situaties uitgevoerd worden.
 
-For example, the following code checks whether the user is of age:
+Bijvoorbeeld, de volgende code controleert of de gebruiker meerderjarig is:
 
 ```python
-age = int(input("How old are you? "))
+age = int(input("Hoe oud ben je? "))
 
 if age > 17:
-    print("You are of age!")
-    print("Here's a copy of GTA6 for you.")
+    print("Je bent meerderjarig!")
+    print("Hier is een kopie van GTA6 voor je.")
 
-print("Next customer, please!")
+print("Volgende klant, alsjeblieft!")
 ```
 
-When the user is over the age of 17, the execution of the program should look like this:
+Wanneer de gebruiker ouder is dan 17, zou de uitvoering van het programma er zo uit moeten zien:
 
 <sample-output>
 
-How old are you? **18**
-You are of age!
-Here's a copy of GTA6 for you.
-Next customer, please!
+Hoe oud ben je? **18**
+Je bent meerderjarig!
+Hier is een kopie van GTA6 voor je.
+Volgende klant, alsjeblieft!
 
 </sample-output>
 
-If the user is 17 or under, only this is printed out:
+Als de gebruiker 17 of jonger is, wordt alleen dit geprint:
 
 <sample-output>
 
-How old are you? **16**
-Next customer, please!
+Hoe oud ben je? **16**
+Volgende klant, alsjeblieft!
 
 </sample-output>
 
-These examples show us that the value given as input affects which parts of the program are executed. The program contains a _conditional statement_ with a block of code which is executed only if the condition in the statement is true.
+Deze voorbeelden laten ons zien dat de waarde die als input gegeven wordt beïnvloedt welke delen van het programma uitgevoerd worden. Het programma bevat een _voorwaardelijke statement_ met een blok code dat alleen uitgevoerd wordt als de voorwaarde in de statement waar is.
 
-In a conditional statement the keyword `if` is followed by a _condition_, such as a comparison of two values. The code block following this header line is only executed if the condition is true.
+In een voorwaardelijke statement wordt het sleutelwoord `if` gevolgd door een _voorwaarde_, zoals een vergelijking van twee waarden. Het code blok dat volgt op deze header regel wordt alleen uitgevoerd als de voorwaarde waar is.
 
-Notice the colon character following the `if` header. In the following code there is no colon:
+Let op het dubbele punt karakter dat volgt op de `if` header. In de volgende code is er geen dubbele punt:
 
 ```python
 age = 10
 
-# no colon at the end of the following line
+# geen dubbele punt aan het einde van de volgende regel
 if age > 17
-    print("You are of age.")
+    print("Je bent meerderjarig.")
 ```
 
-Upon execution this causes an error:
+Bij uitvoering veroorzaakt dit een fout:
 
 <sample-output>
 File "program.py", line 3
@@ -71,198 +71,198 @@ File "program.py", line 3
 SyntaxError: invalid syntax
 </sample-output>
 
-## Comparison operators
+## Vergelijkingsoperatoren
 
-Very typically conditions consist of comparing two values. Here is a table with the most common comparison operators used in Python:
+Heel vaak bestaan voorwaarden uit het vergelijken van twee waarden. Hier is een tabel met de meest voorkomende vergelijkingsoperatoren die gebruikt worden in Python:
 
-| Operator | Purpose                  | Example  |
-| :------: | ------------------------ | -------- |
-|   `==`   | Equal to                 | `a == b` |
-|   `!=`   | Not equal to             | `a != b` |
-|   `>`    | Greater than             | `a > b`  |
-|   `>=`   | Greater than or equal to | `a >= b` |
-|   `<`    | Less than                | `a < b`  |
-|   `<=`   | Less than or equal to    | `a <= b` |
+| Operator | Doel                      | Voorbeeld |
+| :------: | ------------------------- | --------- |
+|   `==`   | Gelijk aan                | `a == b`  |
+|   `!=`   | Niet gelijk aan           | `a != b`  |
+|   `>`    | Groter dan                | `a > b`   |
+|   `>=`   | Groter dan of gelijk aan  | `a >= b`  |
+|   `<`    | Kleiner dan               | `a < b`   |
+|   `<=`   | Kleiner dan of gelijk aan | `a <= b`  |
 
-Let's have a look at a program which prints out different things based on whether the number the user inputs is negative, positive, or equal to zero:
+Laten we kijken naar een programma dat verschillende dingen print afhankelijk van of het getal dat de gebruiker invoert negatief, positief, of gelijk aan nul is:
 
 ```python
-number = int(input("Please type in a number: "))
+number = int(input("Typ alsjeblieft een getal in: "))
 
 if number < 0:
-    print("The number is negative.")
+    print("Het getal is negatief.")
 
 if number > 0:
-    print("The number is positive.")
+    print("Het getal is positief.")
 
 if number == 0:
-    print("The number is zero.")
+    print("Het getal is nul.")
 ```
 
-Examples of how the program functions with three different inputs:
+Voorbeelden van hoe het programma functioneert met drie verschillende inputs:
 
 <sample-output>
 
-Please type in a number: **15**
-The number is positive.
+Typ alsjeblieft een getal in: **15**
+Het getal is positief.
 
 </sample-output>
 
 <sample-output>
 
-Please type in a number: **-18**
-The number is negative.
+Typ alsjeblieft een getal in: **-18**
+Het getal is negatief.
 
 </sample-output>
 
 <sample-output>
 
-Please type in a number: **0**
-The number is zero.
+Typ alsjeblieft een getal in: **0**
+Het getal is nul.
 
 </sample-output>
 
-## Indentation
+## Inspringing
 
-Python recognises that a block of code is part of a conditional statement if each line of code in the block is _indented_ the same. That is, there should be a bit of whitespace at the beginning of every line of code within the code block. Each line should have the same amount of whitespace.
+Python herkent dat een blok code deel uitmaakt van een voorwaardelijke statement als elke regel code in het blok _ingesprongen_ is. Dat is, er zou een beetje witruimte moeten staan aan het begin van elke regel code binnen het code blok. Elke regel zou dezelfde hoeveelheid witruimte moeten hebben.
 
-For example:
+Bijvoorbeeld:
 
 ```python
-password = input("Please type in a password: ")
+password = input("Typ alsjeblieft een wachtwoord in: ")
 
 if password == "kittycat":
-    print("You knew the password!")
-    print("You must be either the intended user...")
-    print("...or quite an accomplished hacker.")
+    print("Je kende het wachtwoord!")
+    print("Je moet ofwel de beoogde gebruiker zijn...")
+    print("...ofwel een behoorlijk behendige hacker.")
 
-print("The program has finished its execution. Thanks and bye!")
+print("Het programma heeft zijn uitvoering voltooid. Dank en dag!")
 ```
 
-You can use the Tab key, short for _tabulator_ key, to insert a set amount of whitespace.
+Je kunt de Tab-toets gebruiken, kort voor _tabulator_ toets, om een vastgestelde hoeveelheid witruimte in te voegen.
 
-When you want to end an indented code block you can use the `Backspace` key to return to the beginning of the line.
+Wanneer je een ingesprongen code blok wilt beëindigen, kun je de `Backspace` toets gebruiken om terug te keren naar het begin van de regel.
 
 <in-browser-programming-exercise name="Orwell" tmcname="part01-21_orwell">
 
-Please write a program which asks the user for an integer number. The program should print out "Orwell" if the number is exactly 1984, and otherwise do nothing.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om een geheel getal. Het programma zou "Orwell" moeten printen als het getal precies 1984 is, en anders niets doen.
 
 <sample-output>
 
-Please type in a number: **2020**
+Typ alsjeblieft een getal in: **2020**
 
 </sample-output>
 
 <sample-output>
 
-Please type in a number: **1984**
+Typ alsjeblieft een getal in: **1984**
 Orwell
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Absolute value" tmcname="part01-22_absolute_value">
+<in-browser-programming-exercise name="Absolute waarde" tmcname="part01-22_absolute_value">
 
-Please write a program which asks the user for an integer number. If the number is less than zero, the program should print out the number multiplied by -1. Otherwise the program prints out the number as is. Please have a look at the examples of expected behaviour below.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om een geheel getal. Als het getal kleiner is dan nul, zou het programma het getal vermenigvuldigd met -1 moeten printen. Anders print het programma het getal zoals het is. Bekijk alsjeblieft de voorbeelden van verwacht gedrag hieronder.
 
 <sample-output>
 
-Please type in a number: **-7**
-The absolute value of this number is 7
+Typ alsjeblieft een getal in: **-7**
+De absolute waarde van dit getal is 7
 
 </sample-output>
 
 <sample-output>
 
-Please type in a number: **1**
-The absolute value of this number is 1
+Typ alsjeblieft een getal in: **1**
+De absolute waarde van dit getal is 1
 
 </sample-output>
 
 <sample-output>
 
-Please type in a number: **-99**
-The absolute value of this number is 99
-
-</sample-output>
-
-</in-browser-programming-exercise>
-
-<in-browser-programming-exercise name="Soup or no soup" tmcname="part01-23_soup_or_no_soup">
-
-Please write a program which asks for the user's name. If the name is anything but "Jerry", the program then asks for the number of portions and prints out the total cost. The price of a single portion is 5.90.
-
-Two examples of the program's execution:
-
-<sample-output>
-
-Please tell me your name: **Kramer**
-How many portions of soup? **2**
-The total cost is 11.8
-Next please!
-
-</sample-output>
-
-<sample-output>
-
-Please tell me your name: **Jerry**
-Next please!
+Typ alsjeblieft een getal in: **-99**
+De absolute waarde van dit getal is 99
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-## Boolean values and Boolean expressions
+<in-browser-programming-exercise name="Soep of geen soep" tmcname="part01-23_soup_or_no_soup">
 
-Any condition used in a conditional statement will result in a truth value, that is, either true or false. For example, the condition `a < 5` is true if `a` is less than 5, and false if `a` is equal to or greater than 5.
+Schrijf alsjeblieft een programma dat vraagt om de naam van de gebruiker. Als de naam alles behalve "Jerry" is, vraagt het programma dan om het aantal porties en print de totale kosten uit. De prijs van een enkele порция is 5.90.
 
-These types of values are often called _Boolean_ values, named after the English mathematician George Boole. In Python they are handled by the `bool` data type. Variables of type `bool` can only have two values: `True` or `False`.
+Twee voorbeelden van de uitvoering van het programma:
 
-Any bit of code that results in a Boolean value is called a _Boolean expression_. For example, the condition in a conditional statement is always a Boolean expression, and the words _condition_ and _Boolean expression_ can often be used interchangeably.
+<sample-output>
 
-The result of a Boolean expression can be stored in a variable just like the result of any numerical calculation:
+Vertel me alsjeblieft je naam: **Kramer**
+Hoeveel porties soep? **2**
+De totale kosten zijn 11.8
+Volgende alsjeblieft!
+
+</sample-output>
+
+<sample-output>
+
+Vertel me alsjeblieft je naam: **Jerry**
+Volgende alsjeblieft!
+
+</sample-output>
+
+</in-browser-programming-exercise>
+
+## Boolean waarden en Boolean uitdrukkingen
+
+Elke voorwaarde die gebruikt wordt in een voorwaardelijke statement zal resulteren in een waarheidswaarde, dat is, ofwel waar of onwaar. Bijvoorbeeld, de voorwaarde `a < 5` is waar als `a` kleiner is dan 5, en onwaar als `a` gelijk aan of groter is dan 5.
+
+Deze soorten waarden worden vaak _Boolean_ waarden genoemd, genoemd naar de Engelse wiskundige George Boole. In Python worden ze afgehandeld door het `bool` data type. Variabelen van type `bool` kunnen slechts twee waarden hebben: `True` of `False`.
+
+Elk stukje code dat resulteert in een Boolean waarde wordt een _Boolean uitdrukking_ genoemd. Bijvoorbeeld, de voorwaarde in een voorwaardelijke statement is altijd een Boolean uitdrukking, en de woorden _voorwaarde_ en _Boolean uitdrukking_ kunnen vaak door elkaar gebruikt worden.
+
+Het resultaat van een Boolean uitdrukking kan opgeslagen worden in een variabele net zoals het resultaat van elke numerieke berekening:
 
 ```python
 a = 3
 condition = a < 5
 print(condition)
 if condition:
-    print("a is less than 5")
+    print("a is kleiner dan 5")
 ```
 
 <sample-output>
 
 True
-a is less than 5
+a is kleiner dan 5
 
 </sample-output>
 
-The Python keywords `True` and `False` can also be used directly. In the following example the `print` command is executed every time, because the value of the condition is `True`:
+De Python sleutelwoorden `True` en `False` kunnen ook direct gebruikt worden. In het volgende voorbeeld wordt de `print` opdracht elke keer uitgevoerd, omdat de waarde van de voorwaarde `True` is:
 
 ```python
 condition = True
 if condition:
-    print("This is printed every time.")
+    print("Dit wordt elke keer geprint.")
 ```
 
 <sample-output>
 
-This is printed every time.
+Dit wordt elke keer geprint.
 
 </sample-output>
 
-<in-browser-programming-exercise name="Calculator" tmcname="part01-25_calculator">
+<in-browser-programming-exercise name="Rekenmachine" tmcname="part01-25_calculator">
 
-Please write a program which asks the user for two numbers and an operation. If the operation is _add_, _multiply_ or _subtract_, the program should calculate and print out the result of the operation with the given numbers. If the user types in anything else, the program should print out nothing.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om twee getallen en een bewerking. Als de bewerking _add_, _multiply_ of _subtract_ is, zou het programma het resultaat van de bewerking met de gegeven getallen moeten berekenen en printen. Als de gebruiker iets anders typt, zou het programma niets moeten printen.
 
-Some examples of expected behaviour:
+Sommige voorbeelden van verwacht gedrag:
 
 <sample-output>
 
-Number 1: **10**
-Number 2: **17**
-Operation: **add**
+Getal 1: **10**
+Getal 2: **17**
+Bewerking: **add**
 
 10 + 17 = 27
 
@@ -270,9 +270,9 @@ Operation: **add**
 
 <sample-output>
 
-Number 1: **4**
-Number 2: **6**
-Operation: **multiply**
+Getal 1: **4**
+Getal 2: **6**
+Bewerking: **multiply**
 
 4 \* 6 = 24
 
@@ -280,9 +280,9 @@ Operation: **multiply**
 
 <sample-output>
 
-Number 1: **4**
-Number 2: **6**
-Operation: **subtract**
+Getal 1: **4**
+Getal 2: **6**
+Bewerking: **subtract**
 
 4 - 6 = -2
 
@@ -290,80 +290,80 @@ Operation: **subtract**
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Temperatures" tmcname="part01-26_temperatures">
+<in-browser-programming-exercise name="Temperaturen" tmcname="part01-26_temperatures">
 
-Please write a program which asks the user for a temperature in degrees Fahrenheit, and then prints out the same in degrees Celsius. If the converted temperature falls below zero degrees Celsius, the program should also print out "Brr! It's cold in here!".
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om een temperatuur in graden Fahrenheit, en print dan hetzelfde uit in graden Celsius. Als de omgezette temperatuur onder nul graden Celsius valt, zou het programma ook "Brr! Het is koud hier!" moeten printen.
 
-The formula for converting degrees Fahrenheit to degrees Celsius can be found easily by any search engine of your choice.
+De formule voor het omzetten van graden Fahrenheit naar graden Celsius kan gemakkelijk gevonden worden door elke zoekmachine van jouw keuze.
 
-Two examples of expected behaviour:
+Twee voorbeelden van verwacht gedrag:
 
 <sample-output>
 
-Please type in a temperature (F): **101**
-101 degrees Fahrenheit equals 38.333333333333336 degrees Celsius
+Typ alsjeblieft een temperatuur in (F): **101**
+101 graden Fahrenheit is gelijk aan 38.333333333333336 graden Celsius
 
 </sample-output>
 
 <sample-output>
 
-Please type in a temperature (F): **21**
-21 degrees Fahrenheit equals -6.111111111111111 degrees Celsius
-Brr! It's cold in here!
+Typ alsjeblieft een temperatuur in (F): **21**
+21 graden Fahrenheit is gelijk aan -6.111111111111111 graden Celsius
+Brr! Het is koud hier!
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="What to wear tomorrow" tmcname="part01-29_what_to_wear_tomorrow">
+<in-browser-programming-exercise name="Wat te dragen morgen" tmcname="part01-29_what_to_wear_tomorrow">
 
-Please write a program which asks for tomorrow's weather forecast and then suggests weather-appropriate clothing.
+Schrijf alsjeblieft een programma dat vraagt naar de weersvoorspelling voor morgen en suggereert dan kleding die geschikt is voor het weer.
 
-The suggestion should change if the temperature (measured in degrees Celsius) is over 20, 10 or 5 degrees, and also if there is rain on the radar.
+De suggestie zou moeten veranderen als de temperatuur (gemeten in graden Celsius) boven 20, 10 of 5 graden is, en ook als er regen op de radar is.
 
-Some examples of expected behaviour:
+Sommige voorbeelden van verwacht gedrag:
 
 <sample-output>
 
-What is the weather forecast for tomorrow?
-Temperature: **21**
-Will it rain (yes/no): **no**
-Wear jeans and a T-shirt
+Wat is de weersvoorspelling voor morgen?
+Temperatuur: **21**
+Zal het regenen (ja/nee): **nee**
+Draag een spijkerbroek en een T-shirt
 
 </sample-output>
 
 <sample-output>
 
-What is the weather forecast for tomorrow?
-Temperature: **11**
-Will it rain (yes/no): **no**
-Wear jeans and a T-shirt
-I recommend a jumper as well
+Wat is de weersvoorspelling voor morgen?
+Temperatuur: **11**
+Zal het regenen (ja/nee): **nee**
+Draag een spijkerbroek en een T-shirt
+Ik raad ook een trui aan
 
 </sample-output>
 
 <sample-output>
 
-What is the weather forecast for tomorrow?
-Temperature: **7**
-Will it rain (yes/no): **no**
-Wear jeans and a T-shirt
-I recommend a jumper as well
-Take a jacket with you
+Wat is de weersvoorspelling voor morgen?
+Temperatuur: **7**
+Zal het regenen (ja/nee): **nee**
+Draag een spijkerbroek en een T-shirt
+Ik raad ook een trui aan
+Neem een jas mee
 
 </sample-output>
 
 <sample-output>
 
-What is the weather forecast for tomorrow?
-Temperature: **3**
-Will it rain (yes/no): **yes**
-Wear jeans and a T-shirt
-I recommend a jumper as well
-Take a jacket with you
-Make it a warm coat, actually
-I think gloves are in order
-Don't forget your umbrella!
+Wat is de weersvoorspelling voor morgen?
+Temperatuur: **3**
+Zal het regenen (ja/nee): **ja**
+Draag een spijkerbroek en een T-shirt
+Ik raad ook een trui aan
+Neem een jas mee
+Maak er eigenlijk een warme jas van
+Ik denk dat handschoenen op hun plaats zijn
+Vergeet je paraplu niet!
 
 </sample-output>
 

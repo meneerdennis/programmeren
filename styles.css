@@ -369,18 +369,33 @@ body {
   content: "Code";
 }
 
-/* Syntax highlighting for Python */
-.lesson-content pre.code-block.language-python code .keyword {
-  color: #008000;
+/* Enhanced syntax highlighting for Python */
+.lesson-content pre.code-block code.language-python .keyword {
+  color: #0000ff;
   font-weight: bold;
 }
 
-.lesson-content pre.code-block.language-python code .string {
-  color: #a31515;
+.lesson-content pre.code-block code.language-python .string {
+  color: #ff0000;
 }
 
-.lesson-content pre.code-block.language-python code .function {
+.lesson-content pre.code-block code.language-python .function {
+  color: #795e26;
+}
+
+.lesson-content pre.code-block code.language-python .comment {
+  color: #808080;
+  font-style: italic;
+}
+
+.lesson-content pre.code-block code.language-python .builtin {
   color: #0000ff;
+  font-weight: bold;
+}
+
+.lesson-content pre.code-block code.language-python .number {
+  color: #ff6600;
+  font-weight: bold;
 }
 
 /* Syntax highlighting for JavaScript */
@@ -635,7 +650,7 @@ body {
 
 .sample-output {
   background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
-  border: 2px solid #28a745;
+  border: 2px solid #555555;
   border-radius: 8px;
   padding: 1.25rem;
   margin: 1.5rem 0;
@@ -651,7 +666,7 @@ body {
   content: "📋 Expected Output:";
   display: block;
   font-weight: bold;
-  color: #155724;
+  color: #555555;
   margin-bottom: 0.75rem;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -665,7 +680,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #28a745, #20c997);
+  background: linear-gradient(90deg, #777777, #5c5c5c);
   border-radius: 8px 8px 0 0;
 }
 

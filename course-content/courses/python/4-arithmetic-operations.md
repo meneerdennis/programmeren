@@ -1,41 +1,41 @@
 ---
 path: "/python/4-arithmetic-operations"
-title: "Arithmetic operations"
+title: "Rekenkundige bewerkingen"
 hidden: false
 ---
 
-<text-box variant='learningObjectives' name="Learning objectives">
+<text-box variant='learningObjectives' name="Leerdoelen">
 
-After this section
+Na deze sectie
 
-- You will be able to use variables in various arithmetic operations
-- You will know how to deal with numbers in user input
-- You will know how to cast values into other fundamental data types
+- Zul je variabelen in verschillende rekenkundige bewerkingen kunnen gebruiken
+- Zul je weten hoe je om te gaan met getallen in gebruikersinput
+- Zul je weten hoe je waarden cast naar andere fundamentele data types
 
 </text-box>
 
-In the previous sections you've seen examples with basic arithmetics. In the following table you can see the most common arithmetic operators in Python, with examples:
+In de vorige secties heb je voorbeelden gezien met basis rekenkunde. In de volgende tabel kun je de meest voorkomende rekenkundige operatoren in Python zien, met voorbeelden:
 
-| Operator | Purpose                          | Example    | Result |
-| :------: | -------------------------------- | ---------- | ------ |
-|   `+`    | Addition                         | `2 + 4`    | `6`    |
-|   `-`    | Subtraction                      | `10 - 2.5` | `7.5`  |
-|   `*`    | Multiplication                   | `-2 * 123` | `-246` |
-|   `/`    | Division (floating point result) | `9 / 2`    | `4.5`  |
-|   `//`   | Division (integer result)        | `9 // 2`   | `4`    |
-|   `%`    | Modulo                           | `9 % 2`    | `1`    |
-|   `**`   | Exponentiation                   | `2 ** 3`   | `8`    |
+| Operator | Doel                              | Voorbeeld  | Resultaat |
+| :------: | --------------------------------- | ---------- | --------- |
+|   `+`    | Optelling                         | `2 + 4`    | `6`       |
+|   `-`    | Aftrekking                        | `10 - 2.5` | `7.5`     |
+|   `*`    | Vermenigvuldiging                 | `-2 * 123` | `-246`    |
+|   `/`    | Deling (zwevende-komma resultaat) | `9 / 2`    | `4.5`     |
+|   `//`   | Deling (integer resultaat)        | `9 // 2`   | `4`       |
+|   `%`    | Modulo                            | `9 % 2`    | `1`       |
+|   `**`   | Exponentiële                      | `2 ** 3`   | `8`       |
 
-The order of operations is familiar from mathematics: first calculate the exponents, then multiplication and division, and finally addition and subtraction. The order can be changed with parentheses.
+De volgorde van bewerkingen is bekend uit de wiskunde: bereken eerst de exponenten, dan vermenigvuldiging en deling, en tenslotte optelling en aftrekking. De volgorde kan veranderd worden met haakjes.
 
-For example this bit of code
+Bijvoorbeeld dit stukje code
 
 ```python
 print(2 + 3 * 3)
 print((2 + 3) * 3)
 ```
 
-prints out
+print uit
 
 <sample-output>
 
@@ -44,36 +44,36 @@ prints out
 
 </sample-output>
 
-## Operands, operators and data types
+## Operanden, operatoren en data types
 
-A calculation usually consists of _operands_ and _operators_:
+Een berekening bestaat meestal uit _operanden_ en _operatoren_:
 
-The data type of an operand usually determines the data type of the result: if two integers are added together, the result will also be an integer. If a floating point number is subtracted from another floating point number, the result is a floating point number. In fact, if a single one of the operands in an expression is a floating point number, the result will also be a floating point number, regardless of the other operands.
+Het data type van een operand bepaalt meestal het data type van het resultaat: als twee integers bij elkaar opgeteld worden, zal het resultaat ook een integer zijn. Als een zwevende-komma getal afgetrokken wordt van een ander zwevende-komma getal, is het resultaat een zwevende-komma getal. In feite, als een enkele van de operanden in een uitdrukking een zwevende-komma getal is, zal het resultaat ook een zwevende-komma getal zijn, ongeacht de andere operanden.
 
-Division `/` is an exception to this rule. Its result is a floating point number, even if the operands are integers. For example `1 / 5` will result in the floating point number `0.2`.
+Deling `/` is een uitzondering op deze regel. Het resultaat is een zwevende-komma getal, zelfs als de operanden integers zijn. Bijvoorbeeld `1 / 5` zal resulteren in het zwevende-komma getal `0.2`.
 
-Example:
+Voorbeeld:
 
 ```python
 height = 172.5
 weight = 68.55
 
-# the Body Mass Index, or BMI, is calculated by dividing body mass with the square of height
-# height is converted into metres in the formula
+# de Body Mass Index, of BMI, wordt berekend door het lichaamsgewicht te delen door het kwadraat van de lengte
+# de lengte wordt omgezet naar meters in de formule
 bmi = weight / (height / 100) ** 2
 
-print(f"The BMI is {bmi}")
+print(f"De BMI is {bmi}")
 ```
 
-This program prints out the following:
+Dit programma print het volgende:
 
 <sample-output>
 
-The BMI is 23.037177063642087
+De BMI is 23.037177063642087
 
 </sample-output>
 
-Notice Python also has an integer division operator `//`. If the operands are integers, it will produce an integer. The result is rounded down to the nearest integer. For example this program
+Let op dat Python ook een integer deling operator heeft `//`. Als de operanden integers zijn, zal het een integer produceren. Het resultaat wordt naar beneden afgerond naar het dichtstbijzijnde integer. Bijvoorbeeld dit programma
 
 ```python
 x = 3
@@ -83,7 +83,7 @@ print(f"/ operator {x/y}")
 print(f"// operator {x//y}")
 ```
 
-prints out
+print uit
 
 <sample-output>
 
@@ -92,267 +92,267 @@ prints out
 
 </sample-output>
 
-## Numbers as input
+## Getallen als input
 
-We have already used the `input` command to read in strings from the user. The same function can be used to read in numbers, but the string produced by the function must then be converted to a numeric data type in the program code. In the previous section we cast integers as strings with the `str` function. The same basic principle applies here, but the name of the casting function will be different.
+We hebben al de `input` opdracht gebruikt om strings van de gebruiker in te lezen. Dezelfde functie kan gebruikt worden om getallen in te lezen, maar de string die geproduceerd wordt door de functie moet dan omgezet worden naar een numeriek data type in de programmacode. In de vorige sectie casten we integers als strings met de `str` functie. Hetzelfde basis principe geldt hier, maar de naam van de casting functie zal anders zijn.
 
-A string can be converted into an integer with the function `int`. The following program asks the user for their year of birth and stores it in the variable `input_str`. The program then creates another variable `year`, which contains the year converted into an integer. After this the calculation `2021-year` is possible, using the user-supplied value.
+Een string kan omgezet worden naar een integer met de functie `int`. Het volgende programma vraagt de gebruiker naar hun geboortejaar en slaat het op in de variabele `input_str`. Het programma maakt dan een andere variabele `year`, die het jaar bevat omgezet naar een integer. Na dit is de berekening `2021-year` mogelijk, met de door de gebruiker verstrekte waarde.
 
 ```python
-input_str = input("Which year were you born? ")
+input_str = input("In welk jaar ben je geboren? ")
 year = int(input_str)
-print(f"Your age at the end of the year 2021: {2021 - year}" )
+print(f"Je leeftijd aan het einde van het jaar 2021: {2021 - year}" )
 ```
 
 <sample-output>
 
-Which year were you born? **1995**
-Your age at the end of the year 2021: 26
+In welk jaar ben je geboren? **1995**
+Je leeftijd aan het einde van het jaar 2021: 26
 
 </sample-output>
 
-Usually you do not need to create two separate variables (like `input_str` and `year` above) to read a number value from the user. Instead, reading the input with the `input` function and converting it with the `int` function can be achieved in one go:
+Meestal hoef je geen twee aparte variabelen te maken (zoals `input_str` en `year` hierboven) om een getalwaarde van de gebruiker te lezen. In plaats daarvan kan het lezen van de input met de `input` functie en het omzetten met de `int` functie in één keer bereikt worden:
 
 ```python
-year = int(input("Which year were you born? "))
-print(f"Your age at the end of the year 2021: {2021 - year}" )
+year = int(input("In welk jaar ben je geboren? "))
+print(f"Je leeftijd aan het einde van het jaar 2021: {2021 - year}" )
 ```
 
-Similarly, a string can be converted into a floating point number with the function `float`. This programs asks the user for their height and weight, and uses these to calculate their BMI:
+Evenzo kan een string omgezet worden naar een zwevende-komma getal met de functie `float`. Dit programma vraagt de gebruiker naar hun lengte en gewicht, en gebruikt deze om hun BMI te berekenen:
 
 ```python
-height = float(input("What is your height? "))
-weight = float(input("What is your weight? "))
+height = float(input("Wat is je lengte? "))
+weight = float(input("Wat is je gewicht? "))
 
 height = height / 100
 bmi = weight / height ** 2
 
-print(f"The BMI is {bmi}")
+print(f"De BMI is {bmi}")
 ```
 
-An example printout from the program:
+Een voorbeeld printout van het programma:
 
 <sample-output>
 
-What is your height? **163**
-What is your weight? **74.45**
-The BMI is 28.02137829801649
+Wat is je lengte? **163**
+Wat is je gewicht? **74.45**
+De BMI is 28.02137829801649
 
 </sample-output>
 
-<in-browser-programming-exercise name="Times five" tmcname="part01-13_times_five">
+<in-browser-programming-exercise name="Vijf keer" tmcname="part01-13_times_five">
 
-Please write a program which asks the user for a number. The program then prints out the number multiplied by five.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om een getal. Het programma print dan het getal vermenigvuldigd met vijf uit.
 
-The program should function as follows:
-
-<sample-output>
-
-Please type in a number: **3**
-3 times 5 is 15
-
-</sample-output>
-
-</in-browser-programming-exercise>
-
-<in-browser-programming-exercise name="Name and age" tmcname="part01-14_name_and_age">
-
-Please write a program which asks the user for their name and year of birth. The program then prints out a message as follows:
+Het programma zou als volgt moeten functioneren:
 
 <sample-output>
 
-What is your name? **Frances Fictitious**
-Which year were you born? **1990**
-Hi Frances Fictitious, you will be 31 years old at the end of the year 2021
+Typ alsjeblieft een getal in: **3**
+3 keer 5 is 15
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-## Using variables
+<in-browser-programming-exercise name="Naam en leeftijd" tmcname="part01-14_name_and_age">
 
-Let's have a look at a program which calculates the sum of three numbers given by the user:
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om hun naam en geboortejaar. Het programma print dan een bericht als volgt uit:
+
+<sample-output>
+
+Wat is je naam? **Frances Fictitious**
+In welk jaar ben je geboren? **1990**
+Hallo Frances Fictitious, je zult 31 jaar oud zijn aan het einde van het jaar 2021
+
+</sample-output>
+
+</in-browser-programming-exercise>
+
+## Variabelen gebruiken
+
+Laten we kijken naar een programma dat de som van drie getallen berekent die door de gebruiker gegeven zijn:
 
 ```python
-number1 = int(input("First number: "))
-number2 = int(input("Second number: "))
-number3 = int(input("Third number: "))
+number1 = int(input("Eerste getal: "))
+number2 = int(input("Tweede getal: "))
+number3 = int(input("Derde getal: "))
 
 sum = number1 + number2 + number3
-print(f"The sum of the numbers: {sum}")
+print(f"De som van de getallen: {sum}")
 ```
 
-An example execution of the program:
+Een voorbeeld uitvoering van het programma:
 
 <sample-output>
 
-First number: **5**
-Second number: **21**
-Third number: **7**
-The sum of the numbers: 33
+Eerste getal: **5**
+Tweede getal: **21**
+Derde getal: **7**
+De som van de getallen: 33
 
 </sample-output>
 
-The program uses four different variables, but two would easily suffice in this case:
+Het programma gebruikt vier verschillende variabelen, maar twee zouden gemakkelijk genoeg zijn in dit geval:
 
 ```python
 sum = 0
 
-number = int(input("First number: "))
+number = int(input("Eerste getal: "))
 sum = sum + number
 
-number = int(input("Second number: "))
+number = int(input("Tweede getal: "))
 sum = sum + number
 
-number = int(input("Third number: "))
+number = int(input("Derde getal: "))
 sum = sum + number
 
-print(f"The sum of the numbers: {sum}")
+print(f"De som van de getallen: {sum}")
 ```
 
-Now all inputs from the user are read into the one and the same variable `number`. The value of the variable `sum` is _increased_ by the value of the variable `number` each time the user inputs a new number.
+Nu worden alle inputs van de gebruiker ingelezen in dezelfde variabele `number`. De waarde van de variabele `sum` wordt _verhoogd_ met de waarde van de variabele `number` elke keer dat de gebruiker een nieuw getal invoert.
 
-Let's take a closer look at this command:
+Laten we eens kijken naar deze opdracht:
 
 ```python
 sum = sum + number
 ```
 
-Here, the value of the variable `sum` and the value of the variable `number` are added together, and the result is stored back in the variable `sum`. For example, if before the command the value of `sum` is 3 and the value of `number` is 2, after the command is executed, the value of `sum` is 5.
+Hier worden de waarde van de variabele `sum` en de waarde van de variabele `number` bij elkaar opgeteld, en het resultaat wordt terug opgeslagen in de variabele `sum`. Bijvoorbeeld, als voor de opdracht de waarde van `sum` 3 is en de waarde van `number` 2, na de uitvoering van de opdracht is de waarde van `sum` 5.
 
-Increasing the value of a variable is a very common operation. As such, there is a commonly used shorthand notation which achieves the same result as the explicit summing up above:
+Het verhogen van de waarde van een variabele is een zeer veel voorkomende bewerking. Als zodanig is er een veelgebruikte afkorting notatie die hetzelfde resultaat bereikt als de expliciete optelling hierboven:
 
 ```python
 sum += number
 ```
 
-This allows us to write the above program a little more concisely:
+Dit stelt ons in staat om het bovenstaande programma iets beknopter te schrijven:
 
 ```python
 sum = 0
 
-number = int(input("First number: "))
+number = int(input("Eerste getal: "))
 sum += number
 
-number = int(input("Second number: "))
+number = int(input("Tweede getal: "))
 sum += number
 
-number = int(input("Third number: "))
+number = int(input("Derde getal: "))
 sum += number
 
-print(f"The sum of the numbers: {sum}")
+print(f"De som van de getallen: {sum}")
 ```
 
-In fact, we don't necessarily need the variable `number` at all. The inputs from the user can also be processed like this:
+In feite hebben we de variabele `number` niet per se nodig. De inputs van de gebruiker kunnen ook zo verwerkt worden:
 
 ```python
 sum = 0
 
-sum += int(input("First number: "))
-sum += int(input("Second number: "))
-sum += int(input("Third number: "))
+sum += int(input("Eerste getal: "))
+sum += int(input("Tweede getal: "))
+sum += int(input("Derde getal: "))
 
-print(f"The sum of the numbers: {sum}")
+print(f"De som van de getallen: {sum}")
 ```
 
-Of course, it will depend on the context how many variables are needed. If it is required to remember each value the user inputs, it will not be possible to "reuse" the same variable to read different values from the user. Consider the following:
+Natuurlijk hangt het af van de context hoeveel variabelen nodig zijn. Als het vereist is om elke waarde te onthouden die de gebruiker invoert, zal het niet mogelijk zijn om dezelfde variabele te "hergebruiken" om verschillende waarden van de gebruiker te lezen. Overweeg het volgende:
 
 ```python
-number1 = int(input("First number: "))
-number2 = int(input("Second number: "))
+number1 = int(input("Eerste getal: "))
+number2 = int(input("Tweede getal: "))
 
 print(f"{number1} + {number2} = {number1+number2}")
 ```
 
 <sample-output>
 
-First number: **2**
-Second number: **3**
+Eerste getal: **2**
+Tweede getal: **3**
 2 + 3 = 5
 
 </sample-output>
 
-On the other hand, the above program does not have a named variable for storing the sum of the two values.
+Aan de andere kant heeft het bovenstaande programma geen benoemde variabele voor het opslaan van de som van de twee waarden.
 
-"Reusing" a variable only makes sense when there is a need to temporarily store things of a similar type and purpose, for example when summing numbers.
+Een variabele "hergebruiken" heeft alleen zin als er behoefte is aan tijdelijk opslaan van dingen van een vergelijkbaar type en doel, bijvoorbeeld bij het optellen van getallen.
 
-<in-browser-programming-exercise name="Seconds in a day" tmcname="part01-15_seconds_in_a_day">
+<in-browser-programming-exercise name="Seconden in een dag" tmcname="part01-15_seconds_in_a_day">
 
-Please write a program which asks the user for a number of days. The program then prints out the number of seconds in the amount of days given.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om een aantal dagen. Het programma print dan het aantal seconden in het gegeven aantal dagen uit.
 
-The program should function as follows:
+Het programma zou als volgt moeten functioneren:
 
 <sample-output>
 
-How many days? **1**
-Seconds in that many days: 86400
+Hoeveel dagen? **1**
+Seconden in zoveel dagen: 86400
 
 </sample-output>
 
-Another example:
+Ander voorbeeld:
 
 <sample-output>
 
-How many days? **7**
-Seconds in that many days: 604800
-
-</sample-output>
-
-</in-browser-programming-exercise>
-
-<in-browser-programming-exercise name="Fix the code: Product" tmcname="part01-16_product">
-
-This program asks the user for three numbers. The program then prints out their product, that is, the numbers multiplied by each other. There is, however, something wrong with the program - it doesn't work quite right, as you can see if you run it. Please fix it.
-
-An example of the expected execution of the program:
-
-<sample-output>
-
-Please type in the first number: **2**
-Please type in the second number: **3**
-Please type in the third number: **5**
-The product is 30
+Hoeveel dagen? **7**
+Seconden in zoveel dagen: 604800
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Sum and product" tmcname="part01-17_sum_and_product">
+<in-browser-programming-exercise name="Fix de code: Product" tmcname="part01-16_product">
 
-Please write a program which asks the user for two numbers. The program will then print out the sum and the product of the two numbers.
+Dit programma vraagt de gebruiker om drie getallen. Het programma print dan hun product uit, dat is, de getallen vermenigvuldigd met elkaar. Er is echter iets mis met het programma - het werkt niet helemaal goed, zoals je kunt zien als je het uitvoert. Repareer het alsjeblieft.
 
-The program should function as follows:
+Een voorbeeld van de verwachte uitvoering van het programma:
 
 <sample-output>
 
-Number 1: **3**
-Number 2: **7**
-The sum of the numbers: 10
-The product of the numbers: 21
+Typ alsjeblieft het eerste getal in: **2**
+Typ alsjeblieft het tweede getal in: **3**
+Typ alsjeblieft het derde getal in: **5**
+Het product is 30
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Food expenditure" tmcname="part01-19_food_expenditure">
+<in-browser-programming-exercise name="Som en product" tmcname="part01-17_sum_and_product">
 
-Please write a program which estimates a user's typical food expenditure.
+Schrijf alsjeblieft een programma dat de gebruiker vraagt om twee getallen. Het programma zal dan de som en het product van de twee getallen printen.
 
-The program asks the user how many times a week they eat at the student cafeteria. Then it asks for the price of a typical student lunch, and for money spent on groceries during the week.
-
-Based on this information the program calculates the user's typical food expenditure both weekly and daily.
-
-The program should function as follows:
+Het programma zou als volgt moeten functioneren:
 
 <sample-output>
 
-How many times a week do you eat at the student cafeteria? **4**
-The price of a typical student lunch? **2.5**
-How much money do you spend on groceries in a week? **28.5**
+Getal 1: **3**
+Getal 2: **7**
+De som van de getallen: 10
+Het product van de getallen: 21
 
-Average food expenditure:
-Daily: 5.5 euros
-Weekly: 38.5 euros
+</sample-output>
+
+</in-browser-programming-exercise>
+
+<in-browser-programming-exercise name="Voedseluitgaven" tmcname="part01-19_food_expenditure">
+
+Schrijf alsjeblieft een programma dat de typische voedseluitgaven van een gebruiker schat.
+
+Het programma vraagt de gebruiker hoeveel keer per week ze eten in de studentenkantine. Dan vraagt het naar de prijs van een typische studentenlunch, en naar geld uitgegeven aan boodschappen tijdens de week.
+
+Gebaseerd op deze informatie berekent het programma de typische voedseluitgaven van de gebruiker zowel wekelijks als dagelijks.
+
+Het programma zou als volgt moeten functioneren:
+
+<sample-output>
+
+Hoeveel keer per week eet je in de studentenkantine? **4**
+De prijs van een typische studentenlunch? **2.5**
+Hoeveel geld geef je uit aan boodschappen in een week? **28.5**
+
+Gemiddelde voedseluitgaven:
+Dagelijks: 5.5 euro
+Wekelijks: 38.5 euro
 
 </sample-output>
 

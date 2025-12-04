@@ -1,65 +1,65 @@
 ---
 path: "/python/2-information-from-the-user"
-title: "Information from the user"
+title: "Informatie van de gebruiker"
 hidden: false
 ---
 
-<text-box variant='learningObjectives' name='Learning objectives'>
+<text-box variant='learningObjectives' name='Leerdoelen'>
 
-After this section
+Na deze sectie
 
-- You will know how to write a program which uses input from the user
-- You will know how to use variables to store input and print it out
-- You will be able to combine strings
+- Zul je weten hoe je een programma schrijft dat input van de gebruiker gebruikt
+- Zul je weten hoe je variabelen gebruikt om input op te slaan en te printen
+- Kun je strings combineren
 
 </text-box>
 
-_Input_ refers to any information a user gives to the program. Specifically, the Python command `input` reads in a line of input typed in by the user. It may also be used to display a message to the user, to prompt for specific input.
+_Input_ verwijst naar alle informatie die een gebruiker aan het programma geeft. Specifiek leest de Python opdracht `input` een regel input in die door de gebruiker getypt is. Het kan ook gebruikt worden om een bericht aan de gebruiker te tonen, om specifieke input te vragen.
 
-The following program reads in the name of the user with the `input` command. It then prints it out with the `print` command:
+Het volgende programma leest de naam van de gebruiker in met de `input` opdracht. Het print het dan uit met de `print` opdracht:
 
 ```python
-name = input("What is your name? ")
-print("Hi there, " + name)
+name = input("Wat is je naam? ")
+print("Hallo, " + name)
 ```
 
-The execution of this program could look like this (input from the user in red):
+De uitvoering van dit programma zou er zo uit kunnen zien (input van de gebruiker in rood):
 
 <sample-output>
 
-What is your name? **Paul Python**
-Hi there, Paul Python
+Wat is je naam? **Paul Python**
+Hallo, Paul Python
 
 </sample-output>
 
-What this program prints out is partially dependent on input from the user. That means the execution of the program could also look like this:
+Wat dit programma print is gedeeltelijk afhankelijk van input van de gebruiker. Dat betekent dat de uitvoering van het programma er ook zo uit zou kunnen zien:
 
 <sample-output>
 
-What is your name? **Paula Programmer**
-Hi there, Paula Programmer
+Wat is je naam? **Paula Programmer**
+Hallo, Paula Programmer
 
 </sample-output>
 
-The word `name` in this program is a _variable_. In the context of programming, a variable is a location for storing some _value_, such as a string or a number. This value can be used later, and it can also be changed.
+Het woord `name` in dit programma is een _variabele_. In de context van programmeren is een variabele een locatie voor het opslaan van een bepaalde _waarde_, zoals een string of een getal. Deze waarde kan later gebruikt worden, en kan ook veranderd worden.
 
-<text-box variant="hint" name="Naming variables">
+<text-box variant="hint" name="Variabelen een naam geven">
 
-In principle, variables can be named quite freely, within certain limits specified in the Python language.
+In principe kunnen variabelen vrijelijk benoemd worden, binnen bepaalde grenzen die in de Python taal gespecificeerd zijn.
 
-It is a common international programming practice to name variables in English, but you may come across code where variables are named in other languages, such as the native language of the programmer. The name of the variable has no direct effect on its content, so the name, in that sense, does not matter. However, it can often be helpful in understanding how code functions if variables are named logically and in English.
+Het is een veelgebruikte internationale programmeerpraktijk om variabelen in het Engels te benoemen, maar je kunt code tegenkomen waar variabelen in andere talen benoemd zijn, zoals de moedertaal van de programmeur. De naam van de variabele heeft geen direct effect op de inhoud ervan, dus de naam doet er in die zin niet toe. Echter, het kan vaak helpen bij het begrijpen hoe code functioneert als variabelen logisch en in het Engels benoemd zijn.
 
 </text-box>
 
-<in-browser-programming-exercise name="Name twice" tmcname="part01-06_name_twice">
+<in-browser-programming-exercise name="Naam twee keer" tmcname="part01-06_name_twice">
 
-Please write a program which asks for the user's name and then prints it twice, on two consecutive lines.
+Schrijf alsjeblieft een programma dat vraagt om de naam van de gebruiker en deze dan twee keer print, op twee opeenvolgende regels.
 
-An example of the how the program should function:
+Een voorbeeld van hoe het programma zou moeten functioneren:
 
 <sample-output>
 
-What is your name? **Paul**
+Wat is je naam? **Paul**
 Paul
 Paul
 
@@ -67,140 +67,140 @@ Paul
 
 </in-browser-programming-exercise>
 
-## Referencing a variable
+## Verwijzen naar een variabele
 
-A single variable can be referred to many times in a program:
+Een enkele variabele kan veel keren in een programma worden aangeroepen:
 
 ```python
-name = input("What is your name? ")
+name = input("Wat is je naam? ")
 
-print("Hi, " + name + "!")
-print(name + " is quite a nice name.")
+print("Hallo, " + name + "!")
+print(name + " is een mooie naam.")
 ```
 
-If the user gives the name `Paul Python`, this program prints out the following:
+Als de gebruiker de naam `Paul Python` geeft, print dit programma het volgende:
 
 <sample-output>
 
-What is your name? **Paul Python**
-Hi, Paul Python!
-Paul Python is quite a nice name.
+Wat is je naam? **Paul Python**
+Hallo, Paul Python!
+Paul Python is een mooie naam.
 
 </sample-output>
 
-Let's have a closer look at the way the `print` command is used above. Within the brackets of the command there is both text in quotation marks as well as variable names which refer to input from the user. These have been combined with a `+` operator, which _concatenates_ two strings into a single string.
+Laten we eens kijken naar de manier waarop de `print` opdracht hierboven wordt gebruikt. Binnen de haken van de opdracht staat zowel tekst in aanhalingstekens als variabelenamen die verwijzen naar input van de gebruiker. Deze zijn gecombineerd met een `+` operator, die _concateneert_ twee strings tot een enkele string.
 
-Strings and variables can be combined quite freely:
+Strings en variabelen kunnen vrijelijk gecombineerd worden:
 
 ```python
-name = input("What is your name? ")
+name = input("Wat is je naam? ")
 
-print("Hi " + name + "! Let me make sure: your name is " + name + "?")
+print("Hallo " + name + "! Laat me controleren: je naam is " + name + "?")
 ```
 
-If the user gives the name `Ellen Example` this prints out
+Als de gebruiker de naam `Ellen Example` geeft, print dit
 
 <sample-output>
 
-What is your name? **Ellen Example**
-Hi Ellen Example! Let me make sure: your name is Ellen Example?
+Wat is je naam? **Ellen Example**
+Hallo Ellen Example! Laat me controleren: je naam is Ellen Example?
 
 </sample-output>
 
-<in-browser-programming-exercise name="Name and exclamation marks" tmcname="part01-07_name_and_exclamation_marks">
+</in-browser-programming-exercise name="Naam en uitroeptekens" tmcname="part01-07_name_and_exclamation_marks">
 
-Please write a program which asks for the user's name and then prints it out twice on a single line so that there is an exclamation mark at the beginning of the line, another between the two names and a third one at the end of the line.
+Schrijf alsjeblieft een programma dat vraagt om de naam van de gebruiker en deze dan twee keer print op een enkele regel zodat er een uitroepteken aan het begin van de regel staat, nog een tussen de twee namen en een derde aan het einde van de regel.
 
-The program should function as follows:
+Het programma zou als volgt moeten functioneren:
 
 <sample-output>
 
-What is your name? **Paul**
+Wat is je naam? **Paul**
 !Paul!Paul!
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-## More than one input
+## Meer dan één input
 
-A program can ask for more than one input. Notice how below each `input` command stores the received value in a different variable.
+Een programma kan vragen om meer dan één input. Let erop hoe hieronder elke `input` opdracht de ontvangen waarde opslaat in een andere variabele.
 
 ```python
-name = input("What is your name? ")
-email = input("What is your email address? ")
-nickname = input("What is your nickname? ")
+name = input("Wat is je naam? ")
+email = input("Wat is je e-mailadres? ")
+nickname = input("Wat is je bijnaam? ")
 
-print("Let's make sure we got this right")
-print("Your name: " + name)
-print("Your email address: " + email)
-print("Your nickname: " + nickname)
+print("Laten we controleren of we dit goed hebben")
+print("Je naam: " + name)
+print("Je e-mailadres: " + email)
+print("Je bijnaam: " + nickname)
 ```
 
-The program could print out this, for example:
+Het programma zou dit kunnen printen, bijvoorbeeld:
 
 <sample-output>
 
-What is your name? **Frances Fictitious**
-What is your email address? **frances99@example.com**
-What is your nickname? **Fran**
-Let's make sure we got this right
-Your name: Frances Fictitious
-Your email address: frances99@example.com
-Your nickname: Fran
+Wat is je naam? **Frances Fictitious**
+Wat is je e-mailadres? **frances99@example.com**
+Wat is je bijnaam? **Fran**
+Laten we controleren of we dit goed hebben
+Je naam: Frances Fictitious
+Je e-mailadres: frances99@example.com
+Je bijnaam: Fran
 
 </sample-output>
 
-If the same variable is used to store more than one input, each new value will replace the previous one. For example:
+Als dezelfde variabele gebruikt wordt om meer dan één input op te slaan, zal elke nieuwe waarde de vorige vervangen. Bijvoorbeeld:
 
 ```python
-address = input("What is your address? ")
-print("So you live at address " + address)
+address = input("Wat is je adres? ")
+print("Dus je woont op adres " + address)
 
-address = input("Please type in a new address: ")
-print("Your address is now " + address)
+address = input("Typ alsjeblieft een nieuw adres in: ")
+print("Je adres is nu " + address)
 ```
 
-An example execution of the program:
+Een voorbeeld van de uitvoering van het programma:
 
 <sample-output>
 
-What is your address? **Python Path 101, Flat 3D**
-So you live at address Python Path 101, Flat 3D
-Please type in a new address: **New Road 999**
-Your address is now New Road 999
+Wat is je adres? **Python Straat 101, Flat 3D**
+Dus je woont op adres Python Straat 101, Flat 3D
+Typ alsjeblieft een nieuw adres in: **Nieuwe Straat 999**
+Je adres is nu Nieuwe Straat 999
 
 </sample-output>
 
-This means that if the same variable is used to store two inputs in succession, there is no way to access the first input value after it has been replaced by the second:
+Dit betekent dat als dezelfde variabele gebruikt wordt om twee inputs achter elkaar op te slaan, er geen manier is om de eerste input waarde te benaderen nadat deze vervangen is door de tweede:
 
 ```python
-address = input("What is your address? ")
-address = input("Please type in a new address: ")
+address = input("Wat is je adres? ")
+address = input("Typ alsjeblieft een nieuw adres in: ")
 
-print("Your address is now " + address)
+print("Je adres is nu " + address)
 ```
 
-An example of how the program's output might look like:
+Een voorbeeld van hoe de output van het programma eruit zou kunnen zien:
 
 <sample-output>
 
-What is your address? **Python Path 10**
-Please type in a new address: **Programmer's Walk 23**
-Your address is now Programmer's Walk 23
+Wat is je adres? **Python Straat 10**
+Typ alsjeblieft een nieuw adres in: **Programmer's Wandeling 23**
+Je adres is nu Programmer's Wandeling 23
 
 </sample-output>
 
-<in-browser-programming-exercise name="Name and address" tmcname="part01-08_name_and_address">
+</in-browser-programming-exercise name="Naam en adres" tmcname="part01-08_name_and_address">
 
-Please write a program which asks for the user's name and address. The program should also print out the given information, as follows:
+Schrijf alsjeblieft een programma dat vraagt om de naam en het adres van de gebruiker. Het programma zou ook de gegeven informatie moeten printen, als volgt:
 
 <sample-output>
 
-Given name: **Steve**
-Family name: **Sanders**
-Street address: **91 Station Road**
-City and postal code: **London EC05 6AW**
+Voornaam: **Steve**
+Achternaam: **Sanders**
+Straatadres: **91 Station Road**
+Stad en postcode: **London EC05 6AW**
 Steve Sanders
 91 Station Road
 London EC05 6AW
@@ -209,36 +209,36 @@ London EC05 6AW
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Fix the code: Utterances" tmcname="part01-09_utterances">
+<in-browser-programming-exercise name="Fix de code: Uitingen" tmcname="part01-09_utterances">
 
-Here is a program which should ask for three utterances and print them out, like so:
+Hier is een programma dat zou moeten vragen om drie uitingen en deze printen, als volgt:
 
 <sample-output>
 
-The 1st part: **hickory**
-The 2nd part: **dickory**
-The 3rd part: **dock**
+Het 1ste deel: **hickory**
+Het 2de deel: **dickory**
+Het 3de deel: **dock**
 hickory-dickory-dock!
 
 </sample-output>
 
-However, there is something wrong with the code below. Please fix it.
+Echter, er is iets mis met de onderstaande code. Repareer het alsjeblieft.
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Story" tmcname="part01-10_story">
+<in-browser-programming-exercise name="Verhaal" tmcname="part01-10_story">
 
-Please write a program which prints out the following story. The user gives a name and a year, which should be inserted into the printout.
+Schrijf alsjeblieft een programma dat het volgende verhaal print. De gebruiker geeft een naam en een jaar, die ingevoegd zouden moeten worden in de printout.
 
 <sample-output>
 
-Please type in a name: **Mary**
-Please type in a year: **1572**
+Typ alsjeblieft een naam in: **Mary**
+Typ alsjeblieft een jaar in: **1572**
 
-Mary is a valiant knight, born in the year 1572. One morning Mary woke up to an awful racket: a dragon was approaching the village. Only Mary could save the village's residents.
+Mary is een dappere ridder, geboren in het jaar 1572. Op een ochtend werd Mary wakker door een afschuwelijk lawaai: een draak naderde het dorp. Alleen Mary kon de bewoners van het dorp redden.
 
 </sample-output>
 
-The story should change according to the input given by the user.
+Het verhaal zou moeten veranderen volgens de input die door de gebruiker gegeven is.
 
 </in-browser-programming-exercise>

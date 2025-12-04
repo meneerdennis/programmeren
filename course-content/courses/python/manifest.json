@@ -1,8 +1,8 @@
 {
   "course": {
     "id": "python",
-    "title": "Python Programming",
-    "description": "Learn Python from scratch with interactive exercises",
+    "title": "Python Programmeren",
+    "description": "Leer Python vanaf nul met interactieve oefeningen",
     "language": "python",
     "difficulty": "intermediate",
     "icon": "🐍"

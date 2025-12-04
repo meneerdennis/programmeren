@@ -244,7 +244,23 @@ class MarkdownParser {
       /```(\w+)?\r?\n([\s\S]*?)```/g,
       (match, lang, code) => {
         const language = lang || "text";
-        const codeContent = this.escapeHtml(code.trim());
+        let codeContent = code.trim();
+
+        console.log(
+          "Processing code block - Language:",
+          language,
+          "Code:",
+          codeContent
+        );
+
+        // Apply syntax highlighting for Python
+        if (language === "python") {
+          codeContent = this.highlightPython(codeContent);
+          console.log("After highlighting:", codeContent);
+        } else {
+          // For other languages, escape HTML
+          codeContent = this.escapeHtml(codeContent);
+        }
 
         // Simple code formatting without inline styles to avoid HTML rendering issues
         return `<pre class="code-block"><code class="language-${language}">${codeContent}</code></pre>`;
@@ -404,6 +420,188 @@ class MarkdownParser {
 
     html += "</table></div>";
     return html;
+  }
+
+  // Apply Python syntax highlighting using a character-by-character approach
+  highlightPython(code) {
+    console.log("highlightPython called with code:", code);
+    const keywords = [
+      "False",
+      "None",
+      "True",
+      "and",
+      "as",
+      "assert",
+      "async",
+      "await",
+      "break",
+      "class",
+      "continue",
+      "def",
+      "del",
+      "elif",
+      "else",
+      "except",
+      "finally",
+      "for",
+      "from",
+      "global",
+      "if",
+      "import",
+      "in",
+      "is",
+      "lambda",
+      "nonlocal",
+      "not",
+      "or",
+      "pass",
+      "raise",
+      "return",
+      "try",
+      "while",
+      "with",
+      "yield",
+    ];
+
+    const builtins = [
+      "print",
+      "input",
+      "int",
+      "float",
+      "str",
+      "len",
+      "range",
+      "type",
+      "sum",
+    ];
+
+    let result = "";
+    let i = 0;
+
+    while (i < code.length) {
+      const remaining = code.slice(i);
+      let matched = false;
+
+      // Skip whitespace
+      if (/\s/.test(code[i])) {
+        result += code[i];
+        i++;
+        continue;
+      }
+
+      // Check for comments (must be before strings)
+      if (code[i] === "#") {
+        let commentEnd = code.indexOf("\n", i);
+        if (commentEnd === -1) commentEnd = code.length;
+        const comment = code.slice(i, commentEnd);
+        result += `<span class="comment">${this.escapeHtml(comment)}</span>`;
+        i = commentEnd;
+        continue;
+      }
+
+      // Check for multi-line strings
+      const multiMatch = remaining.match(/^("""|''')([\s\S]*?)(\1)/);
+      if (multiMatch) {
+        const [full, quote, content] = multiMatch;
+        result += `<span class="string">${this.escapeHtml(full)}</span>`;
+        i += full.length;
+        continue;
+      }
+
+      // Check for double-quoted strings
+      if (code[i] === '"') {
+        let stringEnd = i + 1;
+        while (stringEnd < code.length) {
+          if (code[stringEnd] === "\\") {
+            stringEnd += 2;
+          } else if (code[stringEnd] === '"') {
+            stringEnd++;
+            break;
+          } else {
+            stringEnd++;
+          }
+        }
+        const string = code.slice(i, stringEnd);
+        result += `<span class="string">${this.escapeHtml(string)}</span>`;
+        i = stringEnd;
+        continue;
+      }
+
+      // Check for single-quoted strings
+      if (code[i] === "'") {
+        let stringEnd = i + 1;
+        while (stringEnd < code.length) {
+          if (code[stringEnd] === "\\") {
+            stringEnd += 2;
+          } else if (code[stringEnd] === "'") {
+            stringEnd++;
+            break;
+          } else {
+            stringEnd++;
+          }
+        }
+        const string = code.slice(i, stringEnd);
+        result += `<span class="string">${this.escapeHtml(string)}</span>`;
+        i = stringEnd;
+        continue;
+      }
+
+      // Check for function definitions (e.g., "def funcname(")
+      const defMatch = remaining.match(/^def\s+([a-zA-Z_]\w*)/);
+      if (defMatch) {
+        result += `<span class="keyword">def</span> <span class="function">${this.escapeHtml(
+          defMatch[1]
+        )}</span>`;
+        i += defMatch[0].length;
+        continue;
+      }
+
+      // Check for built-in functions
+      const builtinMatch = remaining.match(
+        new RegExp(`^\\b(${builtins.join("|")})\\b`)
+      );
+      if (builtinMatch) {
+        result += `<span class="builtin">${this.escapeHtml(
+          builtinMatch[1]
+        )}</span>`;
+        i += builtinMatch[1].length;
+        continue;
+      }
+
+      // Check for keywords
+      const keywordMatch = remaining.match(
+        new RegExp(`^\\b(${keywords.filter((k) => k !== "def").join("|")})\\b`)
+      );
+      if (keywordMatch) {
+        result += `<span class="keyword">${this.escapeHtml(
+          keywordMatch[1]
+        )}</span>`;
+        i += keywordMatch[1].length;
+        continue;
+      }
+
+      // Check for numbers
+      const numMatch = remaining.match(/^\d+\.?\d*/);
+      if (numMatch) {
+        result += `<span class="number">${this.escapeHtml(numMatch[0])}</span>`;
+        i += numMatch[0].length;
+        continue;
+      }
+
+      // Check for identifiers
+      const idMatch = remaining.match(/^[a-zA-Z_]\w*/);
+      if (idMatch) {
+        result += this.escapeHtml(idMatch[0]);
+        i += idMatch[0].length;
+        continue;
+      }
+
+      // Default: escape and add single character
+      result += this.escapeHtml(code[i]);
+      i++;
+    }
+
+    return result;
   }
 
   // Escape HTML entities

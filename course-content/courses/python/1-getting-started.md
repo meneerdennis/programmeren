@@ -1,63 +1,63 @@
 ---
 path: "/python/1-getting-started"
-title: "Getting started"
+title: "Beginnen"
 hidden: false
 ---
 
-<text-box variant='learningObjectives' name='Learning objectives'>
+<text-box variant='learningObjectives' name='Leerdoelen'>
 
-After this section:
+Na deze sectie:
 
-- You have written and executed your first Python program
-- You know how to use the print command
-- You can use programming for arithmetic operations
+- Heb je je eerste Python programma geschreven en uitgevoerd
+- Weet je hoe je de print opdracht gebruikt
+- Kun je programmeren gebruiken voor rekenkundige bewerkingen
 
 </text-box>
 
-Computer programs consist of _commands_, where each command instructs the computer to perform a certain action. A computer executes these commands one by one. Among other things, commands can be used for calculations, comparing things in the computer's memory, bringing about changes in how the program functions, passing messages, or asking the user of the program for information.
+Computerprogramma's bestaan uit _opdrachten_, waarbij elke opdracht de computer instrueert om een bepaalde actie uit te voeren. Een computer voert deze opdrachten een voor een uit. Onder andere kunnen opdrachten gebruikt worden voor berekeningen, vergelijken van dingen in het geheugen van de computer, veranderingen aanbrengen in hoe het programma functioneert, berichten doorgeven, of aan de gebruiker van het programma informatie vragen.
 
-Let's start programming by getting familiar with the `print` command, which prints _text_. In this context, printing essentially means that the program will show some text on the screen.
+Laten we beginnen met programmeren door vertrouwd te raken met de `print` opdracht, die _tekst_ print. In deze context betekent printen eigenlijk dat het programma wat tekst op het scherm zal tonen.
 
-The following program will print the line "Hi there!":
+Het volgende programma zal de regel "Hallo daar!" printen:
 
 ```python
-print("Hi there!")
+print("Hallo daar!")
 ```
 
-When the program is executed, it produces this:
+Wanneer het programma wordt uitgevoerd, produceert het dit:
 
 <sample-output>
 
-Hi there!
+Hallo daar!
 
 </sample-output>
 
-The program will not work unless the code is written exactly as above. For example, trying to execute the print command without quotation marks, like this
+Het programma zal niet werken tenzij de code exact zo geschreven wordt als hierboven. Bijvoorbeeld, proberen om de print opdracht uit te voeren zonder aanhalingstekens, zoals dit
 
 ```python
-print(Hi there!)
+print(Hallo daar!)
 ```
 
-will not print the message, but instead cause an error:
+zal het bericht niet printen, maar in plaats daarvan een fout veroorzaken:
 
 <sample-output>
 
 <pre>
 File "<stdin>", line 1
-  print(Hi there!)
+  print(Hallo daar!)
                    ^
 SyntaxError: invalid syntax
 </pre>
 
 </sample-output>
 
-In summary, if you want to print text, the text must be completely enclosed in quotation marks, otherwise Python will not interpret it correctly.
+Samengevat, als je tekst wilt printen, moet de tekst volledig tussen aanhalingstekens staan, anders zal Python het niet correct interpreteren.
 
-Write a program that prints an emoticon: :-)
+Schrijf een programma dat een emoticon print: :-)
 
 <in-browser-programming-exercise name="Print emoticon" tmcname="smiley">
 
-Write a program that prints an emoticon: :-)
+Schrijf een programma dat een emoticon print: :-)
 
 <sample-output>
 :-)
@@ -65,32 +65,32 @@ Write a program that prints an emoticon: :-)
 
 </in-browser-programming-exercise>
 
-## A program with multiple commands
+## Een programma met meerdere opdrachten
 
-Multiple commands written one after another will be executed in order from first to last.
-For example this program
+Meerdere opdrachten die een na de andere geschreven worden zullen in volgorde van eerste naar laatste worden uitgevoerd.
+Bijvoorbeeld dit programma
 
 ```python
-print("Welcome to Introduction to Programming!")
-print("First we will practice using the print command.")
-print("This program prints three lines of text on the screen.")
+print("Welkom bij Inleiding tot Programmeren!")
+print("Eerst zullen we oefenen met het gebruik van de print opdracht.")
+print("Dit programma print drie regels tekst op het scherm.")
 ```
 
-prints the following lines on the screen:
+print de volgende regels op het scherm:
 
 <sample-output>
 
-Welcome to Introduction to Programming!
-First we will practice using the print command.
-This program prints three lines of text on the screen.
+Welkom bij Inleiding tot Programmeren!
+Eerst zullen we oefenen met het gebruik van de print opdracht.
+Dit programma print drie regels tekst op het scherm.
 
 </sample-output>
 
-<in-browser-programming-exercise name="Fix the code: Seven Brothers" tmcname="part01-02_seven_brothers">
+<in-browser-programming-exercise name="Fix de code: Zeven Broers" tmcname="part01-02_seven_brothers">
 
-"Seventeen Brothers" is one of the first novels ever written in Finnish. The story is about seven orphaned brothers who learn to find their way in the world ([read more on Wikipedia](https://en.wikipedia.org/wiki/Seitsem%C3%A4n_veljest%C3%A4)).
+"Zeventien Broers" is een van de eerste romans die ooit in het Fins geschreven is. Het verhaal gaat over zeven weesbroers die leren hun weg te vinden in de wereld ([lees meer op Wikipedia](https://en.wikipedia.org/wiki/Seitsem%C3%A4n_veljest%C3%A4)).
 
-This program should print the names of the brothers in alphabetical order, but it doesn't quite work yet. Fix the program so that the names are printed in the correct order.
+Dit programma zou de namen van de broers in alfabetische volgorde moeten printen, maar het werkt nog niet helemaal. Fix het programma zodat de namen in de juiste volgorde geprint worden.
 
 ```python
 print("Simeoni")
@@ -114,24 +114,24 @@ Tuomas
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Row, Row, Row Your Boat" tmcname="part01-03_row_your_boat">
+<in-browser-programming-exercise name="Rij, Rij, Rij Je Boot" tmcname="part01-03_row_your_boat">
 
-Write a program that prints the following lines exactly as they are written here, including all punctuation:
+Schrijf een programma dat de volgende regels exact zo print zoals ze hier geschreven staan, inclusief alle leestekens:
 
 <sample-output>
 
-Row, row, row your boat,
-Gently down the stream.
-Merrily, merrily, merrily, merrily,
-Life is but a dream.
+Rij, rij, rij je boot,
+Zachtjes stroomafwaarts.
+Vrolijk, vrolijk, vrolijk, vrolijk,
+Het leven is maar een droom.
 
 </sample-output>
 
 </in-browser-programming-exercise>
 
-## Arithmetic operations
+## Rekenkundige bewerkingen
 
-You can also place arithmetic operations in a `print` command. When executed, the result of the operation is printed. For example, the following program
+Je kunt ook rekenkundige bewerkingen in een `print` opdracht plaatsen. Bij uitvoering wordt het resultaat van de bewerking geprint. Bijvoorbeeld, het volgende programma
 
 ```python
 print(2 + 5)
@@ -139,7 +139,7 @@ print(3 * 3)
 print(2 + 2 * 10)
 ```
 
-prints these lines:
+print deze regels:
 
 <sample-output>
 
@@ -149,16 +149,16 @@ prints these lines:
 
 </sample-output>
 
-Note the lack of quotation marks around the arithmetic operations above. Quotation marks are used to indicate _strings_. In the context of programming, strings are sequences of characters. They can consist of letters, numbers, and any other type of characters, such as punctuation marks. Strings are not only words as we usually understand them, but instead a single string can be as long as multiple full sentences.
+Let op het ontbreken van aanhalingstekens rond de rekenkundige bewerkingen hierboven. Aanhalingstekens worden gebruikt om _strings_ aan te geven. In de context van programmeren zijn strings opeenvolgingen van karakters. Ze kunnen bestaan uit letters, cijfers, en elk ander type karakter, zoals leestekens. Strings zijn niet alleen woorden zoals we ze gewoonlijk begrijpen, maar in plaats daarvan kan een enkele string zo lang zijn als meerdere volledige zinnen.
 
-Strings are usually printed exactly as they are written. So the following two commands produce two very different results:
+Strings worden meestal exact zo geprint als ze geschreven zijn. Dus de volgende twee opdrachten produceren twee heel verschillende resultaten:
 
 ```python
 print(2 + 2 * 10)
 print("2 + 2 * 10")
 ```
 
-This program prints:
+Dit programma print:
 
 <sample-output>
 
@@ -167,66 +167,66 @@ This program prints:
 
 </sample-output>
 
-With the second line of code, Python does not calculate the result of the operation, but instead prints the operation itself, as a string.
-So strings are printed exactly as they are written, without any reference to their content.
+Met de tweede regel code berekent Python het resultaat van de bewerking niet, maar print in plaats daarvan de bewerking zelf, als string.
+Dus strings worden exact geprint zoals ze geschreven zijn, zonder enige verwijzing naar hun inhoud.
 
-## Comments
+## Opmerkingen
 
-Any line that begins with the pound sign #, also known as a hash or number sign, is a comment. This means that all text on that line after the # symbol has no effect on how the program functions in any way. Python will simply ignore it.
+Elke regel die begint met het hekjes-symbool #, ook bekend als hash of nummer-teken, is een opmerking. Dit betekent dat alle tekst op die regel na het # symbool geen effect heeft op hoe het programma functioneert. Python zal het gewoon negeren.
 
-Comments are used to explain how a program works, both for the programmer themselves and for others who read the program code. In this program, a comment explains the calculation performed in the code:
+Opmerkingen worden gebruikt om uit te leggen hoe een programma werkt, zowel voor de programmeur zelf als voor anderen die de programmacode lezen. In dit programma legt een opmerking de berekening uit die in de code wordt uitgevoerd:
 
 ```python
-print("Hours in a year:")
-# there are 365 days in a year and 24 hours per day
+print("Uren in een jaar:")
+# er zijn 365 dagen in een jaar en 24 uur per dag
 print(365*24)
 ```
 
-When the program is executed, the comment will not be visible to the user:
+Wanneer het programma wordt uitgevoerd, zal de opmerking niet zichtbaar zijn voor de gebruiker:
 
 <sample-output>
 
-Hours in a year:
+Uren in een jaar:
 8760
 
 </sample-output>
 
-Short comments can also be added at the end of a line:
+Korte opmerkingen kunnen ook aan het einde van een regel toegevoegd worden:
 
 ```python
-print("Hours in a year:")
-print(365*24) # 365 days, 24 hours per day
+print("Uren in een jaar:")
+print(365*24) # 365 dagen, 24 uur per dag
 ```
 
-<in-browser-programming-exercise name="Minutes in a year" tmcname="part01-04_minutes_in_a_year">
+<in-browser-programming-exercise name="Minuten in een jaar" tmcname="part01-04_minutes_in_a_year">
 
-Write a program that prints the number of minutes in a year. Use Python code to perform the calculation, as in the previous code example.
+Schrijf een programma dat het aantal minuten in een jaar print. Gebruik Python code om de berekening uit te voeren, zoals in het vorige code voorbeeld.
 
 </in-browser-programming-exercise>
 
-<in-browser-programming-exercise name="Print some code" tmcname="part01-05_print_code">
+<in-browser-programming-exercise name="Print wat code" tmcname="part01-05_print_code">
 
-So far you have probably used double quotation marks " to print strings. In addition to double quotation marks, Python also accepts single quotation marks '.
+Tot nu toe heb je waarschijnlijk dubbele aanhalingstekens " gebruikt om strings te printen. Naast dubbele aanhalingstekens accepteert Python ook enkele aanhalingstekens '.
 
-This comes in handy if you ever want to print the quotation marks themselves:
+Dit komt van pas als je ooit de aanhalingstekens zelf wilt printen:
 
 ```python
 
-print('"Come right back!", shouted the police officer.')
+print('"Kom meteen terug!", riep de politieagent.')
 
 ```
 
 <sample-output>
 
-"Come right back!", shouted the police officer.
+"Kom meteen terug!", riep de politieagent.
 
 </sample-output>
 
-Write a program that prints the following:
+Schrijf een programma dat het volgende print:
 
 <sample-output>
 
-print("Hello there!")
+print("Hallo daar!")
 
 </sample-output>
 

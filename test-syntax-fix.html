@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Syntax Highlighting Fix Test</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="lesson-content">
+      <h1>Python Syntax Highlighting Fix Test</h1>
+      <p>This tests the fix for double HTML escaping in Python code blocks.</p>
+
+      <pre
+        class="code-block"
+      ><code class="language-python">print("Hallo daar!")</code></pre>
+
+      <pre
+        class="code-block"
+      ><code class="language-python">name = input("Wat is je naam? ")
+print(f"Hallo, {name}!")</code></pre>
+
+      <pre
+        class="code-block"
+      ><code class="language-python"># Test function definition
+def greet_user(name):
+    return f"Hallo, {name}!"
+
+print(greet_user("Python"))</code></pre>
+
+      <h2>Expected Result:</h2>
+      <ul>
+        <li>✓ Keywords should be green and bold</li>
+        <li>✓ Strings should be dark red</li>
+        <li>✓ Functions should be blue</li>
+        <li>✓ Comments should be gray-green and italic</li>
+        <li>✓ Built-in functions should be green and bold</li>
+        <li>✓ Numbers should be green and bold</li>
+      </ul>
+    </div>
+  </body>
+</html>
