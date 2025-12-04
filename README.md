@@ -56,7 +56,8 @@ coding-webapp/
 ├── markdown-parser.js      # Custom markdown parser
 ├── code-executor.js        # Multi-language code execution engine
 ├── course-manager.js       # Course and progress management
-├── 1-getting-started.md    # Example lesson content
+├── build-manifest.js       # Auto-generates course manifests
+├── course-content/         # Course content directory
 ├── test.html              # Quick test page
 └── README.md              # This documentation
 ```
@@ -180,14 +181,107 @@ Hello, World!
 3. **Starter code**: Optional code blocks with language specification
 4. **Expected output**: Optional `<sample-output>` block for validation
 
+## Course Content Structure
+
+### Directory Organization
+
+```
+course-content/
+├── courses/
+│   ├── python/                # Python programming course content
+│   │   ├── 1-getting-started.md
+│   │   ├── 2-information-from-the-user.md
+│   │   ├── 3-more-about-variables.md
+│   │   ├── 4-arithmetic-operations.md
+│   │   ├── 5-conditional-statements.md
+│   │   └── manifest.json       # Auto-generated Python course manifest
+│   └── html-css/              # HTML/CSS course content
+│       ├── 1-html-basics.md
+│       └── manifest.json       # Auto-generated HTML-CSS course manifest
+```
+
+### Course Content Architecture
+
+- **`course-content/courses/{course-name}/`**: Each course has its own independent lesson set
+- **Self-Contained Courses**: Each course folder contains complete, standalone lesson content
+- **Course-Specific Manifests**: Automatically generated manifests per course
+
+### Auto-Generated Course Manifests
+
+The `build-manifest.js` script automatically generates and updates course manifest files:
+
+```bash
+node build-manifest.js
+```
+
+This script:
+
+- Scans all course directories (`course-content/courses/*/`)
+- Auto-generates lesson lists in chronological order for each course
+- Preserves existing course metadata and settings
+- Provides detailed output of generated manifests
+
 ## Customization
 
-### Adding New Lessons
+### Automated Course Management
 
-1. Create a new `.md` file with the same format
-2. Add it to the course manager's lesson list
-3. Include frontmatter with title and path
-4. Use custom tags for interactive elements
+#### Step 1: Create Course Content
+
+**For a New Course** (e.g., `course-content/courses/javascript/`):
+
+```markdown
+# course-content/courses/javascript/1-getting-started.md
+
+---
+
+path: "/javascript/1-getting-started"
+title: "Getting Started with JavaScript"
+hidden: false
+
+---
+
+<text-box variant='learningObjectives' name='Learning objectives'>
+Your learning objectives...
+</text-box>
+
+Your JavaScript lesson content here...
+```
+
+#### Step 2: Auto-Update Course Manifests
+
+Simply run the build script:
+
+```bash
+node build-manifest.js
+```
+
+The script automatically:
+
+- Detects new course directories
+- Scans each course for lesson files
+- Updates all course-specific manifests (`course-content/courses/*/manifest.json`)
+- Preserves existing course metadata and settings
+- Provides detailed output of what was generated
+
+#### Step 3: No Manual Configuration Needed
+
+The course manager automatically reads from the generated course manifests - no additional configuration required!
+
+### Manual Manifest Updates (If Needed)
+
+1. Create a new `.md` file with proper frontmatter and custom tags
+2. Add lesson filename to the course's manifest file
+3. Ensure frontmatter includes unique `path`, `title`, and `hidden` status
+4. Use custom tags: `<text-box>`, `<sample-output>`, `<in-browser-programming-exercise>`
+
+### Best Practices
+
+1. **Consistent Naming**: Use descriptive, kebab-case filenames with numerical prefixes
+2. **Sequential Numbering**: Number lessons sequentially within each course directory
+3. **Unique Paths**: Ensure each lesson has a unique `path` in frontmatter (relative to course)
+4. **Exercise IDs**: Use unique `tmcname` values for each exercise across all courses
+5. **Course Independence**: Each course should be self-contained and complete
+6. **Regular Build**: Run `node build-manifest.js` after adding/changing lessons
 
 ### Styling
 

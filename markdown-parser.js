@@ -168,7 +168,7 @@ class MarkdownParser {
   // Detect programming language from content
   detectLanguage(content) {
     // If no clear pattern, try to detect from code blocks first
-    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
+    const codeBlockRegex = /```(\w+)?\r?\n([\s\S]*?)```/g;
     let match;
 
     while ((match = codeBlockRegex.exec(content)) !== null) {
@@ -239,6 +239,18 @@ class MarkdownParser {
     // Parse lists (before headers to avoid conflicts)
     content = this.parseLists(content);
 
+    // Code blocks - MUST be before inline code to avoid conflicts with backticks
+    content = content.replace(
+      /```(\w+)?\r?\n([\s\S]*?)```/g,
+      (match, lang, code) => {
+        const language = lang || "text";
+        const codeContent = this.escapeHtml(code.trim());
+
+        // Simple code formatting without inline styles to avoid HTML rendering issues
+        return `<pre class="code-block"><code class="language-${language}">${codeContent}</code></pre>`;
+      }
+    );
+
     // Headers
     content = content.replace(/^###### (.*$)/gim, "<h6>$1</h6>");
     content = content.replace(/^##### (.*$)/gim, "<h5>$1</h5>");
@@ -250,20 +262,10 @@ class MarkdownParser {
     // Bold and italic
     content = content.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     content = content.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    content = content.replace(/_([^_]+)_/g, "<em>$1</em>");
 
-    // Inline code
+    // Inline code (after code blocks to avoid conflicts)
     content = content.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-    // Code blocks
-    content = content.replace(
-      /```(\w+)?\n([\s\S]*?)```/g,
-      (match, lang, code) => {
-        const language = lang || "text";
-        return `<pre><code class="language-${language}">${this.escapeHtml(
-          code.trim()
-        )}</code></pre>`;
-      }
-    );
 
     // Links
     content = content.replace(

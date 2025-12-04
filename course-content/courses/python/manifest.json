@@ -4,7 +4,7 @@
     "title": "Python Programming",
     "description": "Learn Python from scratch with interactive exercises",
     "language": "python",
-    "difficulty": "beginner",
+    "difficulty": "intermediate",
     "icon": "🐍"
   },
   "lessons": [
@@ -13,5 +13,7 @@
     "3-more-about-variables.md",
     "4-arithmetic-operations.md",
     "5-conditional-statements.md"
-  ]
+  ],
+  "generatedAt": "2025-12-04T08:03:00.050Z",
+  "note": "This manifest is auto-generated. Do not edit manually."
 }

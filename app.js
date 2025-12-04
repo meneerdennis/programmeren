@@ -6,6 +6,8 @@ class CodingExercisesApp {
     this.courseManager = new CourseManager();
     this.editor = null;
     this.currentExercise = null;
+    this.availableCourses = [];
+    this.currentCourseId = null;
 
     this.init();
   }
@@ -14,41 +16,264 @@ class CodingExercisesApp {
   async init() {
     console.log("Initializing CodingExercisesApp...");
 
-    // Check if a course is selected, if not redirect to home
-    const selectedCourse = localStorage.getItem("selectedCourse");
-    if (!selectedCourse) {
-      console.log("No course selected, redirecting to home page");
-      window.location.href = "home.html";
-      return;
-    }
-
-    // Set the course in the course manager
-    this.courseManager.setCourse(selectedCourse);
-
-    // Set timeout for lesson loading
-    const loadingTimeout = setTimeout(() => {
-      console.warn(
-        "Lesson loading is taking too long, showing fallback content"
-      );
-      this.showFallbackContent();
-    }, 5000); // 5 second timeout
-
     try {
       await this.setupEditor();
-      await this.loadLesson();
+      await this.loadAvailableCourses();
       this.setupEventListeners();
-      this.updateNavigationButtons();
       this.addHomeButton();
-      console.log("App initialized successfully");
 
-      // Clear timeout if loading completed successfully
-      clearTimeout(loadingTimeout);
+      // Initialize current course (will check localStorage for saved selection)
+      await this.initializeCurrentCourse();
+
+      console.log("App initialized successfully");
     } catch (error) {
       console.error("Failed to initialize app:", error);
-      clearTimeout(loadingTimeout);
       this.showError(
         "Failed to initialize the application. Please refresh the page."
       );
+    }
+  }
+
+  // Load all available courses
+  async loadAvailableCourses() {
+    console.log("Starting to load available courses...");
+
+    // Always set fallback data immediately to ensure sidebar renders
+    this.availableCourses = [
+      {
+        id: "html-css",
+        manifest: {
+          course: {
+            id: "html-css",
+            title: "HTML & CSS",
+            description: "Build beautiful web pages with HTML and CSS",
+            language: "html",
+            difficulty: "beginner",
+            icon: "🎨",
+          },
+        },
+      },
+      {
+        id: "python",
+        manifest: {
+          course: {
+            id: "python",
+            title: "Python Programming",
+            description: "Learn Python from scratch with interactive exercises",
+            language: "python",
+            difficulty: "intermediate",
+            icon: "🐍",
+          },
+        },
+      },
+    ];
+
+    console.log(
+      "Available courses set to fallback data:",
+      this.availableCourses
+    );
+
+    // Render sidebar immediately with fallback data
+    this.renderSidebar();
+
+    // Then try to enhance with actual manifest data
+    try {
+      const knownCourses = ["html-css", "python"]; // Maintain consistent order
+      const enhancedCoursesMap = new Map(); // Use map to preserve order
+
+      for (const courseId of knownCourses) {
+        const fallback = this.availableCourses.find((c) => c.id === courseId);
+        if (fallback) {
+          enhancedCoursesMap.set(courseId, fallback);
+        }
+      }
+
+      // Load manifests and update without changing order
+      for (const courseId of knownCourses) {
+        try {
+          console.log(`Attempting to load manifest for course: ${courseId}`);
+          const response = await fetch(
+            `course-content/courses/${courseId}/manifest.json`
+          );
+          console.log(`Response status for ${courseId}:`, response.status);
+
+          if (response.ok) {
+            const manifest = await response.json();
+            console.log(
+              `Successfully loaded manifest for ${courseId}:`,
+              manifest
+            );
+            enhancedCoursesMap.set(courseId, {
+              id: courseId,
+              manifest: manifest,
+            });
+          } else {
+            console.warn(
+              `Failed to load manifest for ${courseId}:`,
+              response.status,
+              response.statusText
+            );
+          }
+        } catch (error) {
+          console.warn(`Error loading manifest for ${courseId}:`, error);
+        }
+      }
+
+      // Convert back to array maintaining order
+      const enhancedCourses = Array.from(enhancedCoursesMap.values());
+
+      // Update courses if we got better data
+      if (enhancedCourses.length > 0) {
+        this.availableCourses = enhancedCourses;
+        console.log(
+          "Updated courses with manifest data:",
+          this.availableCourses
+        );
+        this.renderSidebar();
+      }
+    } catch (error) {
+      console.error("Failed to enhance courses with manifest data:", error);
+      // Keep fallback data
+    }
+  }
+
+  // Render the sidebar with course navigation
+  renderSidebar() {
+    const sidebarContent = document.getElementById("sidebar-content");
+    if (!sidebarContent) return;
+
+    let html = "";
+
+    for (const courseData of this.availableCourses) {
+      const course = courseData.manifest.course;
+      const isActive = this.currentCourseId === courseData.id;
+
+      html += `
+        <div class="sidebar-course">
+          <div class="sidebar-course-header ${isActive ? "active" : ""}" 
+               data-course-id="${courseData.id}">
+            <span class="sidebar-course-icon">${course.icon}</span>
+            <span class="sidebar-course-title">${course.title}</span>
+            <span class="sidebar-course-status">${course.difficulty}</span>
+          </div>
+          <div class="sidebar-lessons" id="lessons-${courseData.id}" style="${
+        isActive ? "" : "display: none;"
+      }">
+          </div>
+        </div>
+      `;
+    }
+
+    sidebarContent.innerHTML = html;
+
+    // Add event listeners to course headers
+    document.querySelectorAll(".sidebar-course-header").forEach((header) => {
+      header.addEventListener("click", (e) => {
+        const courseId = header.dataset.courseId;
+        this.switchCourse(courseId);
+      });
+    });
+
+    // Render lessons for current course
+    if (this.currentCourseId) {
+      this.renderLessonsForCurrentCourse();
+    }
+  }
+
+  // Render lessons for the current course
+  renderLessonsForCurrentCourse() {
+    const lessonsContainer = document.getElementById(
+      `lessons-${this.currentCourseId}`
+    );
+    if (!lessonsContainer || !this.courseManager.lessons.length) return;
+
+    let html = "";
+
+    this.courseManager.lessons.forEach((lesson, index) => {
+      const isActive = this.courseManager.currentLessonIndex === index;
+      const isCompleted = this.courseManager.isExerciseCompleted(lesson.id);
+
+      html += `
+        <div class="sidebar-lesson ${isActive ? "active" : ""} ${
+        isCompleted ? "completed" : ""
+      }" 
+             data-lesson-index="${index}">
+          <div class="sidebar-lesson-number">${index + 1}</div>
+          <div class="sidebar-lesson-title">${lesson.title}</div>
+          ${isCompleted ? '<div class="sidebar-lesson-check">✓</div>' : ""}
+        </div>
+      `;
+    });
+
+    lessonsContainer.innerHTML = html;
+
+    // Add event listeners to lesson items
+    document
+      .querySelectorAll(`#lessons-${this.currentCourseId} .sidebar-lesson`)
+      .forEach((lesson) => {
+        lesson.addEventListener("click", (e) => {
+          const lessonIndex = parseInt(lesson.dataset.lessonIndex);
+          this.switchToLesson(lessonIndex);
+        });
+      });
+  }
+
+  // Switch to a different course
+  async switchCourse(courseId) {
+    if (this.currentCourseId === courseId) return;
+
+    console.log("Switching to course:", courseId);
+    this.currentCourseId = courseId;
+    localStorage.setItem("selectedCourse", courseId);
+
+    // Update UI immediately
+    this.renderSidebar();
+
+    // Reset course manager and load new course
+    this.courseManager.setCourse(courseId);
+    this.courseManager.currentLessonIndex = 0; // Reset to first lesson
+
+    try {
+      await this.courseManager.loadCourse();
+      await this.loadLesson();
+      this.updateNavigationButtons();
+      this.renderLessonsForCurrentCourse();
+    } catch (error) {
+      console.error("Failed to load course:", error);
+      this.showFallbackContent();
+    }
+  }
+
+  // Switch to a specific lesson
+  switchToLesson(lessonIndex) {
+    if (lessonIndex === this.courseManager.currentLessonIndex) return;
+
+    console.log("Switching to lesson:", lessonIndex);
+    this.courseManager.currentLessonIndex = lessonIndex;
+    this.loadLesson();
+    this.updateNavigationButtons(); // Update arrow button states
+    this.renderLessonsForCurrentCourse(); // Update sidebar selection
+  }
+
+  // Initialize current course
+  async initializeCurrentCourse() {
+    const selectedCourse = localStorage.getItem("selectedCourse") || "python";
+    this.currentCourseId = selectedCourse;
+    this.courseManager.setCourse(selectedCourse);
+
+    console.log("Initializing current course:", selectedCourse);
+
+    // Ensure sidebar shows the current course as active
+    this.renderSidebar();
+
+    try {
+      await this.courseManager.loadCourse();
+      await this.loadLesson();
+      this.updateNavigationButtons();
+      this.renderLessonsForCurrentCourse();
+    } catch (error) {
+      console.error("Failed to initialize current course:", error);
+      this.showFallbackContent();
     }
   }
 
@@ -118,8 +343,8 @@ class CodingExercisesApp {
           this.editor = monaco.editor.create(
             document.getElementById("code-editor"),
             {
-              value: "",
-              language: "javascript",
+              value: "# Python editor: test hier je code",
+              language: "python",
               theme: "vs-light",
               fontSize: 14,
               minimap: { enabled: false },
@@ -159,8 +384,7 @@ class CodingExercisesApp {
       <textarea 
         id="fallback-editor" 
         style="width: 100%; height: 300px; font-family: 'Courier New', monospace; font-size: 14px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; resize: vertical; background: #f8f9fa;"
-        placeholder="Select an exercise to start coding..."
-        disabled
+        placeholder="# Python editor: test hier je code"
       ></textarea>
     `;
 
@@ -170,7 +394,7 @@ class CodingExercisesApp {
       setValue: (value) =>
         (document.getElementById("fallback-editor").value = value),
       focus: () => document.getElementById("fallback-editor").focus(),
-      getModel: () => ({ getLanguageId: () => "plaintext" }),
+      getModel: () => ({ getLanguageId: () => "python" }),
       dispose: () => {},
     };
 
@@ -284,14 +508,11 @@ class CodingExercisesApp {
 
     // Update exercise panel
     const exerciseTitleEl = document.getElementById("exercise-title");
-    const exercisePanelEl = document.getElementById("exercise-panel");
 
     if (exerciseTitleEl) {
       exerciseTitleEl.textContent = exercise.name;
     }
-    if (exercisePanelEl) {
-      exercisePanelEl.style.display = "block";
-    }
+    // Exercise panel is always visible now
 
     // Set editor language (only for Monaco editor)
     if (this.setEditorLanguage) {
@@ -373,14 +594,11 @@ class CodingExercisesApp {
 
     // Update exercise panel
     const exerciseTitleEl = document.getElementById("exercise-title");
-    const exercisePanelEl = document.getElementById("exercise-panel");
 
     if (exerciseTitleEl) {
       exerciseTitleEl.textContent = exercise.name;
     }
-    if (exercisePanelEl) {
-      exercisePanelEl.style.display = "block";
-    }
+    // Exercise panel is always visible now
 
     // Set editor language
     if (this.setEditorLanguage) {
@@ -411,15 +629,9 @@ class CodingExercisesApp {
     const editorElement =
       document.querySelector("#code-editor textarea") ||
       document.querySelector("#code-editor");
-    const runBtn = document.getElementById("run-code");
-    const checkBtn = document.getElementById("check-exercise");
 
-    if (editorElement) {
-      editorElement.disabled = false;
-    }
-
-    if (runBtn) runBtn.disabled = false;
-    if (checkBtn) checkBtn.disabled = false;
+    // Editor is already enabled by default now
+    // This method can be used for any additional setup if needed
   }
 
   // Extract starter code from exercise content
@@ -489,6 +701,7 @@ class CodingExercisesApp {
       if (this.courseManager.nextLesson()) {
         this.loadLesson();
         this.updateNavigationButtons();
+        this.renderLessonsForCurrentCourse(); // Update sidebar selection
       }
     });
 
@@ -496,6 +709,7 @@ class CodingExercisesApp {
       if (this.courseManager.previousLesson()) {
         this.loadLesson();
         this.updateNavigationButtons();
+        this.renderLessonsForCurrentCourse(); // Update sidebar selection
       }
     });
 
@@ -527,6 +741,7 @@ class CodingExercisesApp {
 
   // Setup resize handle functionality
   setupResizeHandle() {
+    // Setup main content resize only
     const resizeHandle = document.getElementById("resize-handle");
     const contentArea = document.querySelector(".content-area");
     const exercisePanel = document.querySelector(".exercise-panel");
@@ -599,13 +814,13 @@ class CodingExercisesApp {
 
   // Run code
   async runCode() {
-    if (!this.currentExercise) {
-      this.showOutput("error", "Please select an exercise first");
-      return;
-    }
-
     const code = this.editor.getValue();
-    const language = this.currentExercise.language;
+    let language = "python"; // Default to Python
+
+    // If there's a current exercise, use its language
+    if (this.currentExercise) {
+      language = this.currentExercise.language;
+    }
 
     console.log("Running code:", { code, language });
 

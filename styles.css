@@ -72,6 +72,156 @@ body {
   overflow: hidden;
 }
 
+/* Course navigation sidebar */
+.sidebar {
+  width: 350px;
+  background: white;
+  border-right: 1px solid #e9ecef;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.sidebar-header {
+  padding: 1rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 6;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  color: #495057;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Course navigation items */
+.sidebar-course {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-course-header {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-course-header:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.sidebar-course-header.active {
+  background: linear-gradient(135deg, #4c51bf 0%, #553c9a 100%);
+}
+
+.sidebar-course-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+.sidebar-course-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.sidebar-course-status {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+/* Lesson navigation */
+.sidebar-lessons {
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid #e9ecef;
+  border-top: none;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.sidebar-lesson {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sidebar-lesson:last-child {
+  border-bottom: none;
+}
+
+.sidebar-lesson:hover {
+  background: #e3f2fd;
+}
+
+.sidebar-lesson.active {
+  background: #667eea;
+  color: white;
+}
+
+.sidebar-lesson.completed {
+  border-left: 3px solid #28a745;
+}
+
+.sidebar-lesson-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #6c757d;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.sidebar-lesson.active .sidebar-lesson-number {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sidebar-lesson.completed .sidebar-lesson-number {
+  background: #28a745;
+}
+
+.sidebar-lesson-title {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.sidebar-lesson-check {
+  color: #28a745;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebar-lesson.completed .sidebar-lesson-check {
+  opacity: 1;
+}
+
 /* Content area with lesson */
 .content-area {
   flex: 1;
@@ -147,11 +297,104 @@ body {
   padding: 1rem;
   overflow-x: auto;
   margin: 1rem 0;
+  position: relative;
+}
+
+.lesson-content pre::before {
+  content: attr(class);
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+}
+
+.lesson-content pre.code-block::before {
+  content: "Code";
+}
+
+.lesson-content pre.code-block.language-python::before {
+  content: "Python";
+}
+
+.lesson-content pre.code-block.language-javascript::before {
+  content: "JavaScript";
 }
 
 .lesson-content pre code {
   background: none;
   padding: 0;
+  font-family: "Courier New", "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #212529;
+}
+
+/* Enhanced styling for code blocks with syntax highlighting */
+.lesson-content pre.code-block {
+  position: relative;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.lesson-content pre.code-block::before {
+  content: attr(class);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.75rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.lesson-content pre.code-block.language-python::before {
+  content: "Python";
+  color: #3776ab;
+}
+
+.lesson-content pre.code-block.language-javascript::before {
+  content: "JavaScript";
+  color: #f7df1e;
+}
+
+.lesson-content pre.code-block.language-text::before {
+  content: "Code";
+}
+
+/* Syntax highlighting for Python */
+.lesson-content pre.code-block.language-python code .keyword {
+  color: #008000;
+  font-weight: bold;
+}
+
+.lesson-content pre.code-block.language-python code .string {
+  color: #a31515;
+}
+
+.lesson-content pre.code-block.language-python code .function {
+  color: #0000ff;
+}
+
+/* Syntax highlighting for JavaScript */
+.lesson-content pre.code-block.language-javascript code .keyword {
+  color: #0000ff;
+  font-weight: bold;
+}
+
+.lesson-content pre.code-block.language-javascript code .string {
+  color: #a31515;
+}
+
+.lesson-content pre.code-block.language-javascript code .function {
+  color: #795e26;
 }
 
 /* Table styles */
@@ -391,20 +634,39 @@ body {
 }
 
 .sample-output {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 1rem;
-  margin: 1rem 0;
-  font-family: "Courier New", monospace;
+  background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  font-family: "Courier New", "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #2d5016;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.1);
+  position: relative;
 }
 
 .sample-output::before {
-  content: "Expected Output:";
+  content: "📋 Expected Output:";
   display: block;
   font-weight: bold;
-  color: #666;
-  margin-bottom: 0.5rem;
+  color: #155724;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sample-output::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #28a745, #20c997);
+  border-radius: 8px 8px 0 0;
 }
 
 /* Exercise highlighting */
@@ -434,22 +696,27 @@ body {
     flex-direction: column;
   }
 
+  .sidebar {
+    width: 100%;
+    order: 1;
+    position: static;
+  }
+
   .content-area {
     min-height: 200px;
     order: 2;
   }
 
-  .exercise-panel {
-    width: 100%;
-    min-width: unset;
-    max-width: unset;
-    order: 1;
-    position: static;
-  }
-
   .resize-handle {
     height: 8px;
     cursor: row-resize;
+    order: 3;
+  }
+
+  .exercise-panel {
+    width: 100%;
+    order: 4;
+    position: static;
   }
 
   .app-header {

@@ -25,6 +25,16 @@
       </header>
 
       <main class="main-content">
+        <!-- Course Navigation Sidebar -->
+        <div class="sidebar" id="course-sidebar">
+          <div class="sidebar-header">
+            <h3>Courses</h3>
+          </div>
+          <div class="sidebar-content" id="sidebar-content">
+            <div class="loading">Loading courses...</div>
+          </div>
+        </div>
+
         <div class="content-area">
           <div class="lesson-content" id="lesson-content">
             <div class="loading">Loading lesson content...</div>
@@ -37,11 +47,11 @@
           title="Drag to resize columns"
         ></div>
 
-        <div class="exercise-panel" id="exercise-panel" style="display: none">
+        <div class="exercise-panel" id="exercise-panel">
           <div class="exercise-header">
-            <h3 id="exercise-title">Select an exercise to begin</h3>
-            <button id="run-code" class="run-btn" disabled>Run Code</button>
-            <button id="check-exercise" class="check-btn" disabled>
+            <h3 id="exercise-title">Python Editor</h3>
+            <button id="run-code" class="run-btn">Run Code</button>
+            <button id="check-exercise" class="check-btn">
               Check Solution
             </button>
           </div>
@@ -54,11 +64,11 @@
             <div class="output-container">
               <h4>Output:</h4>
               <div id="exercise-output" class="output-box">
-                Select an exercise and write some code to see the output here.
+                Write some code and click "Run Code" to see the output here.
               </div>
               <h4>Expected Output:</h4>
               <div id="expected-output" class="expected-output-box">
-                No expected output specified.
+                Expected output will be shown here when an exercise is selected.
               </div>
             </div>
           </div>
