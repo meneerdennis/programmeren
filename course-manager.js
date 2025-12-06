@@ -6,6 +6,7 @@ class CourseManager {
     this.progress = this.loadProgress();
     this.courseId = null;
     this.courseManifest = null;
+    this.currentChunkIndex = 0; // Track current chunk within lesson
   }
 
   // Set the course to load
@@ -185,12 +186,162 @@ class CourseManager {
     return this.lessons[this.currentLessonIndex] || null;
   }
 
+  // Chunk navigation methods
+  nextChunk() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return false;
+
+    // Create parser for this lesson to check chunk capabilities
+    const parser = new MarkdownParser();
+    parser.splitIntoChunks(lesson.content);
+    parser.currentChunkIndex = this.currentChunkIndex;
+
+    if (parser.canGoNext()) {
+      parser.nextChunk();
+      this.currentChunkIndex = parser.currentChunkIndex;
+      console.log(`Advanced to chunk ${this.currentChunkIndex + 1}`);
+      return true;
+    }
+    console.log(`Cannot advance from chunk ${this.currentChunkIndex + 1}`);
+    return false;
+  }
+
+  previousChunk() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return false;
+
+    // Create parser for this lesson to check chunk capabilities
+    const parser = new MarkdownParser();
+    parser.splitIntoChunks(lesson.content);
+    parser.currentChunkIndex = this.currentChunkIndex;
+
+    if (parser.canGoPrevious()) {
+      parser.previousChunk();
+      this.currentChunkIndex = parser.currentChunkIndex;
+      console.log(`Moved to previous chunk ${this.currentChunkIndex + 1}`);
+      return true;
+    }
+    console.log(`Cannot go back from chunk ${this.currentChunkIndex + 1}`);
+    return false;
+  }
+
+  canGoNextChunk() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return false;
+
+    // Create parser for this lesson to check chunk capabilities
+    const parser = new MarkdownParser();
+    parser.splitIntoChunks(lesson.content);
+    parser.currentChunkIndex = this.currentChunkIndex;
+
+    const canGo = parser.canGoNext();
+    console.log(
+      `Can go to next chunk from ${this.currentChunkIndex + 1}:`,
+      canGo
+    );
+    return canGo;
+  }
+
+  canGoPreviousChunk() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return false;
+
+    return this.currentChunkIndex > 0;
+  }
+
+  // Reset chunk navigation when changing lessons
+  resetChunkNavigation() {
+    console.log(
+      `Resetting chunk navigation for lesson "${
+        this.getCurrentLesson()?.title || "Unknown"
+      }"`
+    );
+    this.currentChunkIndex = 0;
+  }
+
+  // Get chunk info for current lesson
+  getCurrentChunkInfo() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return { index: 0, total: 0 };
+
+    const parser = new MarkdownParser();
+    parser.splitIntoChunks(lesson.content);
+    parser.currentChunkIndex = this.currentChunkIndex;
+
+    const info = {
+      index: this.currentChunkIndex + 1,
+      total: parser.getTotalChunks(),
+    };
+
+    console.log(`Chunk info for lesson "${lesson.title}":`, info);
+    return info;
+  }
+
+  // Get current chunk content
+  getCurrentChunkContent() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return "";
+
+    // Create a fresh parser for this lesson
+    const parser = new MarkdownParser();
+    const chunks = parser.splitIntoChunks(lesson.content);
+    parser.currentChunkIndex = this.currentChunkIndex;
+
+    console.log(
+      `Getting chunk content for lesson "${lesson.title}", chunk ${
+        this.currentChunkIndex + 1
+      }/${parser.getTotalChunks()}`
+    );
+
+    return parser.getCurrentChunkContent();
+  }
+
+  // Check if lesson has chunks (more than 1 chunk)
+  hasChunks() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return false;
+
+    const parser = new MarkdownParser();
+    const chunks = parser.splitIntoChunks(lesson.content);
+    const totalChunks = parser.getTotalChunks();
+    const hasChunks = totalChunks > 1;
+
+    console.log(
+      `Lesson "${lesson.title}" has ${totalChunks} chunks, hasChunks: ${hasChunks}`
+    );
+    return hasChunks;
+  }
+
+  // Get total chunks for current lesson
+  getTotalChunks() {
+    const lesson = this.getCurrentLesson();
+    if (!lesson) return 0;
+
+    const parser = new MarkdownParser();
+    const chunks = parser.splitIntoChunks(lesson.content);
+    const total = parser.getTotalChunks();
+
+    console.log(`Total chunks for lesson "${lesson.title}": ${total}`);
+    return total;
+  }
+
   // Navigate to next lesson
   nextLesson() {
     if (this.currentLessonIndex < this.lessons.length - 1) {
       this.currentLessonIndex++;
+      this.resetChunkNavigation(); // Reset chunk navigation when changing lessons
+      console.log(
+        `Switched to next lesson ${
+          this.currentLessonIndex + 1
+        }, chunk navigation reset`
+      );
       return true;
     }
+    console.log(
+      `Cannot go to next lesson, at last lesson ${
+        this.currentLessonIndex + 1
+      }/${this.lessons.length}`
+    );
     return false;
   }
 
@@ -198,8 +349,19 @@ class CourseManager {
   previousLesson() {
     if (this.currentLessonIndex > 0) {
       this.currentLessonIndex--;
+      this.resetChunkNavigation(); // Reset chunk navigation when changing lessons
+      console.log(
+        `Switched to previous lesson ${
+          this.currentLessonIndex + 1
+        }, chunk navigation reset`
+      );
       return true;
     }
+    console.log(
+      `Cannot go to previous lesson, at first lesson ${
+        this.currentLessonIndex + 1
+      }`
+    );
     return false;
   }
 
@@ -220,6 +382,7 @@ class CourseManager {
         progressKey,
         JSON.stringify({
           currentLessonIndex: this.currentLessonIndex,
+          currentChunkIndex: this.currentChunkIndex, // Save chunk position
           completedExercises: this.progress.completedExercises || [],
           lastAccessed: new Date().toISOString(),
         })
@@ -235,13 +398,16 @@ class CourseManager {
       const progressKey = `courseProgress_${this.courseId}`;
       const saved = localStorage.getItem(progressKey);
       if (saved) {
-        return JSON.parse(saved);
+        const progress = JSON.parse(saved);
+        this.currentChunkIndex = progress.currentChunkIndex || 0; // Restore chunk position
+        return progress;
       }
     } catch (error) {
       console.error("Failed to load progress:", error);
     }
     return {
       currentLessonIndex: 0,
+      currentChunkIndex: 0,
       completedExercises: [],
       lastAccessed: null,
     };
@@ -290,9 +456,11 @@ class CourseManager {
   resetProgress() {
     this.progress = {
       currentLessonIndex: 0,
+      currentChunkIndex: 0,
       completedExercises: [],
       lastAccessed: null,
     };
+    this.currentChunkIndex = 0;
     this.saveProgress();
   }
 

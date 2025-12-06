@@ -258,6 +258,7 @@ class CodingExercisesApp {
 
     console.log("Switching to lesson:", lessonIndex);
     this.courseManager.currentLessonIndex = lessonIndex;
+    this.courseManager.resetChunkNavigation(); // Reset chunk navigation when switching lessons
     this.loadLesson();
     this.updateNavigationButtons(); // Update arrow button states
     this.renderLessonsForCurrentCourse(); // Update sidebar selection
@@ -437,21 +438,36 @@ class CodingExercisesApp {
 
     console.log("Lesson loaded:", lesson.title);
 
-    // Parse lesson content
+    // Parse lesson content into chunks
     this.parser.clear();
-    const parsedContent = this.parser.parse(lesson.content);
+    const chunkContent = this.courseManager.getCurrentChunkContent();
 
-    console.log("Parsed content length:", parsedContent.length);
+    if (chunkContent) {
+      // Use chunked content
+      const parsedContent = this.parser.parse(chunkContent);
+      console.log("Parsed chunk content length:", parsedContent.length);
+
+      // Display lesson content
+      const lessonContentEl = document.getElementById("lesson-content");
+      if (lessonContentEl) {
+        lessonContentEl.innerHTML = parsedContent;
+      }
+    } else {
+      // Fallback to regular parsing if no chunks available
+      const parsedContent = this.parser.parse(lesson.content);
+      console.log("Parsed content length:", parsedContent.length);
+
+      // Display lesson content
+      const lessonContentEl = document.getElementById("lesson-content");
+      if (lessonContentEl) {
+        lessonContentEl.innerHTML = parsedContent;
+      }
+    }
+
     console.log(
       "Number of exercises found:",
       this.parser.getExercises().length
     );
-
-    // Display lesson content
-    const lessonContentEl = document.getElementById("lesson-content");
-    if (lessonContentEl) {
-      lessonContentEl.innerHTML = parsedContent;
-    }
 
     const lessonTitleEl = document.getElementById("lesson-title");
     if (lessonTitleEl) {
@@ -460,6 +476,9 @@ class CodingExercisesApp {
 
     // Setup exercise interactions
     this.setupExerciseInteractions();
+
+    // Update chunk navigation
+    this.updateChunkNavigation();
 
     // Update progress
     this.updateProgress();
@@ -742,6 +761,7 @@ class CodingExercisesApp {
       if (this.courseManager.nextLesson()) {
         this.loadLesson();
         this.updateNavigationButtons();
+        this.updateChunkNavigation(); // Also update chunk navigation
         this.renderLessonsForCurrentCourse(); // Update sidebar selection
       }
     });
@@ -750,7 +770,23 @@ class CodingExercisesApp {
       if (this.courseManager.previousLesson()) {
         this.loadLesson();
         this.updateNavigationButtons();
+        this.updateChunkNavigation(); // Also update chunk navigation
         this.renderLessonsForCurrentCourse(); // Update sidebar selection
+      }
+    });
+
+    // Chunk navigation
+    document.getElementById("next-chunk").addEventListener("click", () => {
+      if (this.courseManager.nextChunk()) {
+        this.loadLesson(); // Reload with new chunk
+        this.updateChunkNavigation();
+      }
+    });
+
+    document.getElementById("prev-chunk").addEventListener("click", () => {
+      if (this.courseManager.previousChunk()) {
+        this.loadLesson(); // Reload with previous chunk
+        this.updateChunkNavigation();
       }
     });
 
@@ -1042,6 +1078,30 @@ class CodingExercisesApp {
         title: l.title,
         id: l.id,
       })),
+    });
+  }
+
+  // Update chunk navigation state
+  updateChunkNavigation() {
+    const prevChunkBtn = document.getElementById("prev-chunk");
+    const nextChunkBtn = document.getElementById("next-chunk");
+    const chunkCounterEl = document.getElementById("chunk-counter");
+
+    if (!prevChunkBtn || !nextChunkBtn || !chunkCounterEl) return;
+
+    // Update button states
+    prevChunkBtn.disabled = !this.courseManager.canGoPreviousChunk();
+    nextChunkBtn.disabled = !this.courseManager.canGoNextChunk();
+
+    // Update chunk counter
+    const chunkInfo = this.courseManager.getCurrentChunkInfo();
+    chunkCounterEl.textContent = `(${chunkInfo.index}/${chunkInfo.total})`;
+
+    console.log("Chunk navigation state:", {
+      canGoPreviousChunk: this.courseManager.canGoPreviousChunk(),
+      canGoNextChunk: this.courseManager.canGoNextChunk(),
+      currentChunkIndex: this.courseManager.currentChunkIndex,
+      chunkInfo: chunkInfo,
     });
   }
 

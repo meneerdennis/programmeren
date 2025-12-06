@@ -3,6 +3,8 @@ class MarkdownParser {
   constructor() {
     this.exercises = [];
     this.currentLesson = "";
+    this.chunks = [];
+    this.currentChunkIndex = 0;
   }
 
   // Parse markdown content and convert custom tags to HTML
@@ -625,5 +627,151 @@ class MarkdownParser {
   clear() {
     this.exercises = [];
     this.currentLesson = "";
+    this.chunks = [];
+    this.currentChunkIndex = 0;
+  }
+
+  // Split lesson content into chunks after each exercise
+  splitIntoChunks(content) {
+    // First, handle frontmatter
+    content = this.parseFrontmatter(content);
+
+    // Remove frontmatter for chunking
+    const frontmatterRegex = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/;
+    const cleanContent = content.replace(frontmatterRegex, "");
+
+    // Find all exercise boundaries
+    const exerciseRegex =
+      /<in-browser-programming-exercise[^>]*>([\s\S]*?)<\/in-browser-programming-exercise>/g;
+    const exerciseMatches = [];
+    let match;
+
+    // Find all exercise positions
+    while ((match = exerciseRegex.exec(cleanContent)) !== null) {
+      exerciseMatches.push({
+        start: match.index,
+        end: match.index + match[0].length,
+        fullMatch: match[0],
+        content: match[1],
+      });
+    }
+
+    this.chunks = [];
+
+    // If no exercises found, return the whole content as one chunk
+    if (exerciseMatches.length === 0) {
+      this.chunks.push(cleanContent.trim());
+      this.currentChunkIndex = 0;
+      console.log("No exercises found, created 1 chunk");
+      return this.chunks.map((chunk) => this.parse(chunk));
+    }
+
+    let lastEnd = 0;
+
+    // Create chunks: group content with following exercise
+    let currentChunk = "";
+
+    for (let i = 0; i < exerciseMatches.length; i++) {
+      const exercise = exerciseMatches[i];
+
+      // Add content before this exercise to current chunk
+      if (exercise.start > lastEnd) {
+        const contentBefore = cleanContent.substring(lastEnd, exercise.start);
+        currentChunk += contentBefore;
+      }
+
+      // Add the exercise to current chunk
+      currentChunk += exercise.fullMatch;
+      lastEnd = exercise.end;
+
+      // If this is not the last exercise, or if there's substantial content after,
+      // close the current chunk and start a new one
+      const isLastExercise = i === exerciseMatches.length - 1;
+      const hasContentAfter = lastEnd < cleanContent.length;
+
+      if (isLastExercise && !hasContentAfter) {
+        // Last exercise with no content after - add final chunk
+        if (currentChunk.trim()) {
+          this.chunks.push(currentChunk.trim());
+        }
+      } else if (hasContentAfter) {
+        // There is content after this exercise - close current chunk
+        if (currentChunk.trim()) {
+          this.chunks.push(currentChunk.trim());
+        }
+        currentChunk = ""; // Start new chunk for remaining content
+      }
+    }
+
+    // Add content after the last exercise (if any)
+    if (lastEnd < cleanContent.length) {
+      const contentAfter = cleanContent.substring(lastEnd).trim();
+      if (contentAfter) {
+        this.chunks.push(contentAfter);
+      }
+    }
+
+    console.log(`Created ${this.chunks.length} lesson chunks`);
+    this.currentChunkIndex = 0;
+
+    // Parse chunks
+    return this.chunks.map((chunk) => this.parse(chunk));
+  }
+
+  // Get content for current chunk
+  getCurrentChunkContent() {
+    if (this.chunks.length === 0) return "";
+    return this.chunks[this.currentChunkIndex] || "";
+  }
+
+  // Navigate to next chunk
+  nextChunk() {
+    if (this.currentChunkIndex < this.chunks.length - 1) {
+      this.currentChunkIndex++;
+      return true;
+    }
+    return false;
+  }
+
+  // Navigate to previous chunk
+  previousChunk() {
+    if (this.currentChunkIndex > 0) {
+      this.currentChunkIndex--;
+      return true;
+    }
+    return false;
+  }
+
+  // Check if can navigate
+  canGoNext() {
+    return this.currentChunkIndex < this.chunks.length - 1;
+  }
+
+  canGoPrevious() {
+    return this.currentChunkIndex > 0;
+  }
+
+  // Get current chunk info
+  getCurrentChunkInfo() {
+    return {
+      index: this.currentChunkIndex,
+      total: this.chunks.length,
+      chunk: this.getCurrentChunkContent(),
+    };
+  }
+
+  // Reset chunk navigation
+  resetChunkNavigation() {
+    this.currentChunkIndex = 0;
+  }
+
+  // Get total number of chunks
+  getTotalChunks() {
+    return this.chunks.length;
+  }
+
+  // Get current chunk number (1-based)
+  getCurrentChunkNumber() {
+    return this.currentChunkIndex + 1;
   }
 }
